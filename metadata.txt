@@ -1,0 +1,16 @@
+[general]
+name=Universal XY Converter
+description=Convertisseur universel de coordonnées - Supporte tous les CRS QGIS avec BFTM pour le Burkina Faso
+version=1.0
+qgisMinimumVersion=3.0
+qgisMaximumVersion=3.99
+author=Bazikité Jean-Baptiste KIBORA | Développeur SIG
+email=jeanbaptiste.kibora@tic.gov.bf
+about=Extension universelle de conversion de coordonnées permettant la conversion entre tous les systèmes de coordonnées disponibles dans QGIS, avec support spécial du BFTM (Burkina Faso Transverse Mercator). Fonctionnalités: conversion simple, traitement batch CSV, sélection interactive sur carte, export direct de couches vectorielles.
+tracker=https://github.com/votre_nom/universal_xy_converter
+repository=https://github.com/votre_nom/universal_xy_converter
+
+[parameters]
+source_crs=Tous les CRS QGIS
+target_crs=Tous les CRS QGIS
+format_support=CSV, Shapefile, Couches vectorielles
