@@ -1,16 +1,18 @@
 [general]
 name=Universal XY Converter
-description=Convertisseur universel de coordonnées - Supporte tous les CRS QGIS avec BFTM pour le Burkina Faso
+description=Universal coordinate converter supporting all QGIS CRS with native BFTM support for Burkina Faso. Convertisseur universel de coordonnées supportant tous les CRS QGIS avec BFTM pour le Burkina Faso.
 version=1.0
 qgisMinimumVersion=3.0
 qgisMaximumVersion=3.99
-author=Bazikité Jean-Baptiste KIBORA | Développeur SIG
+author=Bazikité Jean-Baptiste KIBORA | GIS Developer
 email=jeanbaptiste.kibora@tic.gov.bf
-about=Extension universelle de conversion de coordonnées permettant la conversion entre tous les systèmes de coordonnées disponibles dans QGIS, avec support spécial du BFTM (Burkina Faso Transverse Mercator). Fonctionnalités: conversion simple, traitement batch CSV, sélection interactive sur carte, export direct de couches vectorielles.
-tracker=https://github.com/votre_nom/universal_xy_converter
-repository=https://github.com/votre_nom/universal_xy_converter
+about=[EN] Universal XY Converter is a powerful QGIS plugin for coordinate conversion between any Coordinate Reference Systems (CRS) available in QGIS, with native support for BFTM (Burkina Faso Transverse Mercator). Features: single conversion, batch CSV processing, interactive map picking, vector layer export. [FR] Extension universelle de conversion de coordonnées permettant la conversion entre tous les systèmes de coordonnées disponibles dans QGIS, avec support spécial du BFTM (Burkina Faso Transverse Mercator). Fonctionnalités: conversion simple, traitement batch CSV, sélection interactive sur carte, export direct de couches vectorielles.
+tracker=https://github.com/geomatic-web/Universal_xy_converter/issues
+repository=https://github.com/geomatic-web/Universal_xy_converter
+homepage=https://github.com/geomatic-web/Universal_xy_converter
+category=Data Conversion
 
 [parameters]
-source_crs=Tous les CRS QGIS
-target_crs=Tous les CRS QGIS
-format_support=CSV, Shapefile, Couches vectorielles
+source_crs=All QGIS CRS / Tous les CRS QGIS
+target_crs=All QGIS CRS / Tous les CRS QGIS
+format_support=CSV, Shapefile, Vector layers / Couches vectorielles
