@@ -7,8 +7,8 @@ qgisMaximumVersion=3.99
 author=Bazikité Jean-Baptiste KIBORA | Développeur SIG
 email=jeanbaptiste.kibora@tic.gov.bf
 about=Extension universelle de conversion de coordonnées permettant la conversion entre tous les systèmes de coordonnées disponibles dans QGIS, avec support spécial du BFTM (Burkina Faso Transverse Mercator). Fonctionnalités: conversion simple, traitement batch CSV, sélection interactive sur carte, export direct de couches vectorielles.
-tracker=https://github.com/votre_nom/universal_xy_converter
-repository=https://github.com/votre_nom/universal_xy_converter
+tracker=https://github.com/geomatic-web/Universal_xy_converter.git
+repository=https://github.com/geomatic-web/Universal_xy_converter.git
 
 [parameters]
 source_crs=Tous les CRS QGIS
