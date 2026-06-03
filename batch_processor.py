@@ -3,10 +3,6 @@ import os
 from qgis.PyQt.QtCore import QThread, pyqtSignal
 from qgis.core import QgsCoordinateTransform, QgsProject, QgsPointXY
 
-try:
-    from .range_validator import CoordinateValidator
-except ImportError:
-    from range_validator import CoordinateValidator
 
 class BatchProcessor(QThread):
     progress = pyqtSignal(int)
@@ -17,7 +13,6 @@ class BatchProcessor(QThread):
         super().__init__()
         self.file_path = file_path
         self.config = config
-        self.validator = CoordinateValidator()
         
     def run(self):
         try:
@@ -53,26 +48,22 @@ class BatchProcessor(QThread):
         
         # Préparation des nouveaux en-têtes
         new_headers = headers.copy() if self.config.get('keep_original', True) else []
-        
-        target_crs_desc = self.config['target_crs'].description()
-        new_headers.append(f"X_CONVERTI")
-        new_headers.append(f"Y_CONVERTI")
+        new_headers.append("X_CONVERTI")
+        new_headers.append("Y_CONVERTI")
         
         if self.config.get('add_validation', False):
-            new_headers.append("DANS_BURKINA_FASO")
+            new_headers.append("STATUT")
         
         # Transformation
         transform_context = QgsProject.instance().transformContext()
         transform = QgsCoordinateTransform(
-            self.config['source_crs'], 
-            self.config['target_crs'], 
+            self.config['source_crs'],
+            self.config['target_crs'],
             transform_context
         )
         
         total_rows = len(rows)
         processed = 0
-        valid_count = 0
-        invalid_count = 0
         skipped_count = 0
         
         output_rows = []
@@ -90,14 +81,9 @@ class BatchProcessor(QThread):
                 new_row.append(f"{transformed.x():.6f}")
                 new_row.append(f"{transformed.y():.6f}")
                 
-                # Validation si demandé
+                # Ajout du statut si demandé
                 if self.config.get('add_validation', False):
-                    is_valid = self.validator.validate_point(transformed.x(), transformed.y())
-                    new_row.append("OUI" if is_valid else "NON")
-                    if is_valid:
-                        valid_count += 1
-                    else:
-                        invalid_count += 1
+                    new_row.append("OK")
                 
                 output_rows.append(new_row)
                 processed += 1
@@ -119,8 +105,9 @@ class BatchProcessor(QThread):
                     self.log.emit(f"⚠️ Ligne {i+2} ignorée (erreur): {str(e)}")
             
             # Mise à jour progression
-            progress_val = int((i + 1) / total_rows * 100)
-            self.progress.emit(progress_val)
+            if total_rows > 0:
+                progress_val = int((i + 1) / total_rows * 100)
+                self.progress.emit(progress_val)
         
         # Écriture du fichier de sortie
         with open(output_path, 'w', encoding='utf-8', newline='') as f:
@@ -134,10 +121,6 @@ class BatchProcessor(QThread):
         self.log.emit("📊 RAPPORT DE CONVERSION")
         self.log.emit("=" * 50)
         self.log.emit(f"✅ Lignes converties avec succès: {processed}")
-        
-        if self.config.get('add_validation', False):
-            self.log.emit(f"   • Points dans Burkina Faso: {valid_count}")
-            self.log.emit(f"   • Points hors Burkina Faso: {invalid_count}")
         
         if skipped_count > 0:
             self.log.emit(f"⚠️ Lignes ignorées (erreurs): {skipped_count}")

@@ -1,18 +1,19 @@
 [general]
 name=Universal XY Converter
-description=Universal coordinate converter supporting all QGIS CRS with native BFTM support for Burkina Faso. Convertisseur universel de coordonnées supportant tous les CRS QGIS avec BFTM pour le Burkina Faso.
-version=1.0
+description=Universal coordinate converter supporting all QGIS CRS with native BFTM support for Burkina Faso. Convert between any CRS: WGS84, UTM zones 1-60, Adindan, NAD83, ETRS89, GDA2020, and custom PROJ strings. Features: single conversion, batch CSV processing, interactive map picking.
+version=1.0.3
 qgisMinimumVersion=3.0
 qgisMaximumVersion=3.99
 author=Bazikité Jean-Baptiste KIBORA | GIS Developer
 email=jeanbaptiste.kibora@tic.gov.bf
-about=[EN] Universal XY Converter is a powerful QGIS plugin for coordinate conversion between any Coordinate Reference Systems (CRS) available in QGIS, with native support for BFTM (Burkina Faso Transverse Mercator). Features: single conversion, batch CSV processing, interactive map picking, vector layer export. [FR] Extension universelle de conversion de coordonnées permettant la conversion entre tous les systèmes de coordonnées disponibles dans QGIS, avec support spécial du BFTM (Burkina Faso Transverse Mercator). Fonctionnalités: conversion simple, traitement batch CSV, sélection interactive sur carte, export direct de couches vectorielles.
-tracker=https://github.com/geomatic-web/Universal_xy_converter/issues
-repository=https://github.com/geomatic-web/Universal_xy_converter
-homepage=https://github.com/geomatic-web/Universal_xy_converter
+about=Universal XY Converter is a powerful QGIS plugin for coordinate conversion between any Coordinate Reference Systems (CRS) available in QGIS, with native support for BFTM (Burkina Faso Transverse Mercator). Features: single conversion, batch CSV processing, interactive map picking.
+tracker=https://github.com/geomatic-web/universal_xy_converter/issues
+repository=https://github.com/geomatic-web/universal_xy_converter
+homepage=https://github.com/geomatic-web/universal_xy_converter
 category=Data Conversion
+license=GPL-3.0-only
 
 [parameters]
-source_crs=All QGIS CRS / Tous les CRS QGIS
-target_crs=All QGIS CRS / Tous les CRS QGIS
-format_support=CSV, Shapefile, Vector layers / Couches vectorielles
+source_crs=All QGIS CRS
+target_crs=All QGIS CRS
+format_support=CSV, Shapefile

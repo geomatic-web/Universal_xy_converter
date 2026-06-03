@@ -16,12 +16,11 @@ from qgis.PyQt.QtCore import QVariant
 
 try:
     from .batch_processor import BatchProcessor
-    from .range_validator import CoordinateValidator
 except ImportError:
     import sys
     sys.path.append(os.path.dirname(__file__))
     from batch_processor import BatchProcessor
-    from range_validator import CoordinateValidator
+
 
 class UniversalXYConverterDialog(QDialog):
     def __init__(self, iface, plugin_dir):
@@ -31,15 +30,12 @@ class UniversalXYConverterDialog(QDialog):
         self.map_tool = None
         self.rubber_band = None
         self.processor = None
-        self.setWindowTitle("Convertisseur de coordonnées - Universel")
-        self.setMinimumWidth(800)
-        self.setMinimumHeight(600)
+        self.setWindowTitle("Universal XY Converter")
+        self.setMinimumWidth(500)
+        self.setMinimumHeight(650)
         
         # Définition des systèmes de coordonnées
         self.setup_crs_definitions()
-        
-        # Initialisation du validateur
-        self.validator = CoordinateValidator()
         
         self.setup_ui()
     
@@ -235,15 +231,10 @@ class UniversalXYConverterDialog(QDialog):
         self.setup_interactive_tab()
         self.tabs.addTab(self.interactive_tab, "Sélection interactive")
         
-        # Onglet 4: Export direct
-        self.export_tab = QWidget()
-        self.setup_export_tab()
-        self.tabs.addTab(self.export_tab, "Export direct")
-        
-        # Onglet 5: Liste des CRS
-        self.crs_tab = QWidget()
-        self.setup_crs_tab()
-        self.tabs.addTab(self.crs_tab, "Systèmes disponibles")
+        # Onglet 4: Aide rapide
+        self.about_tab = QWidget()
+        self.setup_about_tab()
+        self.tabs.addTab(self.about_tab, "📖 Aide")
         
         layout.addWidget(self.tabs)
         self.setLayout(layout)
@@ -259,7 +250,7 @@ class UniversalXYConverterDialog(QDialog):
         self.direction_group = QButtonGroup()
         self.from_bftm_radio = QRadioButton("Depuis BFTM vers autre système")
         self.to_bftm_radio = QRadioButton("Vers BFTM depuis autre système")
-        self.between_radio = QRadioButton("Entre deux systèmes (sans BFTM)")
+        self.between_radio = QRadioButton("Entre deux systèmes")
         
         self.from_bftm_radio.setChecked(False)
         self.to_bftm_radio.setChecked(True)
@@ -332,11 +323,6 @@ class UniversalXYConverterDialog(QDialog):
         self.source_y = QLineEdit()
         coord_layout.addWidget(self.source_y, 1, 1)
         
-        # Checkbox pour validation
-        self.validate_check = QCheckBox("Valider que les coordonnées sont au Burkina Faso (cible BFTM)")
-        self.validate_check.setChecked(True)
-        coord_layout.addWidget(self.validate_check, 2, 0, 1, 2)
-        
         coord_group.setLayout(coord_layout)
         layout.addWidget(coord_group)
         
@@ -393,29 +379,21 @@ class UniversalXYConverterDialog(QDialog):
         if self.to_bftm_radio.isChecked():
             self.set_combo_by_name(self.source_crs_combo, "🌍 WGS 84 (degrés)")
             self.set_combo_by_name(self.target_crs_combo, "🇧🇫 BFTM (Burkina Faso) - OFFICIEL")
-            self.validate_check.setEnabled(True)
-            self.validate_check.setVisible(True)
         elif self.from_bftm_radio.isChecked():
             self.set_combo_by_name(self.source_crs_combo, "🇧🇫 BFTM (Burkina Faso) - OFFICIEL")
             self.set_combo_by_name(self.target_crs_combo, "🌍 WGS 84 (degrés)")
-            self.validate_check.setEnabled(False)
-            self.validate_check.setVisible(False)
         else:
             if self.source_crs_combo.currentText().startswith("🇧🇫 BFTM"):
                 self.set_combo_by_name(self.source_crs_combo, "🌍 WGS 84 (degrés)")
             if self.target_crs_combo.currentText().startswith("🇧🇫 BFTM"):
                 self.set_combo_by_name(self.target_crs_combo, "📐 WGS 84 / UTM zone 30N")
-            self.validate_check.setEnabled(False)
-            self.validate_check.setVisible(False)
     
     def set_combo_by_name(self, combo, name):
         """Sélectionne un item dans le combobox par son nom."""
-        # Recherche exacte ou partielle
         for i in range(combo.count()):
             if combo.itemText(i) == name:
                 combo.setCurrentIndex(i)
                 return
-        # Recherche partielle
         for i in range(combo.count()):
             if name in combo.itemText(i):
                 combo.setCurrentIndex(i)
@@ -513,19 +491,8 @@ class UniversalXYConverterDialog(QDialog):
             self.result_x.setText(f"{transformed_point.x():.6f}")
             self.result_y.setText(f"{transformed_point.y():.6f}")
             
-            is_target_bftm = self.target_crs_combo.currentText().startswith("🇧🇫 BFTM")
-            
-            if is_target_bftm and self.validate_check.isChecked():
-                is_valid = self.validator.validate_point(transformed_point.x(), transformed_point.y())
-                if is_valid:
-                    self.conversion_status.setText("✓ Conversion réussie - Dans les limites du Burkina Faso")
-                    self.conversion_status.setStyleSheet("color: green;")
-                else:
-                    self.conversion_status.setText("⚠️ Conversion réussie - Point en dehors des limites du Burkina Faso")
-                    self.conversion_status.setStyleSheet("color: orange;")
-            else:
-                self.conversion_status.setText("✓ Conversion réussie")
-                self.conversion_status.setStyleSheet("color: green;")
+            self.conversion_status.setText("✓ Conversion réussie")
+            self.conversion_status.setStyleSheet("color: green;")
             
             source_name = self.source_crs_combo.currentText()
             target_name = self.target_crs_combo.currentText()
@@ -630,8 +597,8 @@ class UniversalXYConverterDialog(QDialog):
         self.batch_add_original.setChecked(True)
         options_layout.addWidget(self.batch_add_original)
         
-        self.batch_add_validation = QCheckBox("Ajouter une colonne de validation (si cible = BFTM)")
-        self.batch_add_validation.setChecked(True)
+        self.batch_add_validation = QCheckBox("Ajouter une colonne de validation")
+        self.batch_add_validation.setChecked(False)
         options_layout.addWidget(self.batch_add_validation)
         
         self.batch_skip_invalid = QCheckBox("Ignorer les lignes avec des coordonnées invalides")
@@ -896,111 +863,65 @@ class UniversalXYConverterDialog(QDialog):
         
         self.interactive_tab.setLayout(layout)
     
-    def setup_export_tab(self):
-        """Configure l'onglet d'export direct avec CRS cible au choix."""
+    def setup_about_tab(self):
+        """Configure l'onglet Aide rapide."""
         layout = QVBoxLayout()
         
-        layer_group = QGroupBox("Couche source")
-        layer_layout = QVBoxLayout()
+        # Titre
+        title = QLabel("📖 Aide rapide - Universal XY Converter")
+        title.setStyleSheet("font-size: 16px; font-weight: bold;")
+        title.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title)
         
-        self.layer_combo = QComboBox()
-        self.refresh_layers_btn = QPushButton("Rafraîchir")
-        self.refresh_layers_btn.clicked.connect(self.refresh_layers)
+        layout.addSpacing(10)
         
-        layer_combo_layout = QHBoxLayout()
-        layer_combo_layout.addWidget(self.layer_combo)
-        layer_combo_layout.addWidget(self.refresh_layers_btn)
-        layer_layout.addLayout(layer_combo_layout)
+        # Guide
+        help_text = QTextEdit()
+        help_text.setReadOnly(True)
+        help_text.setHtml("""
+        <h3>📌 Conversion simple</h3>
+        <ul>
+            <li>Choisissez la direction de conversion</li>
+            <li>Sélectionnez le CRS source et cible</li>
+            <li>Entrez les coordonnées X et Y</li>
+            <li>Cliquez sur "Convertir"</li>
+        </ul>
         
-        layer_group.setLayout(layer_layout)
-        layout.addWidget(layer_group)
+        <h3>📁 Traitement batch CSV</h3>
+        <ul>
+            <li>Chargez votre fichier CSV</li>
+            <li>Sélectionnez les colonnes X et Y</li>
+            <li>Choisissez les CRS source et cible</li>
+            <li>Lancez la conversion</li>
+        </ul>
         
-        target_crs_group = QGroupBox("CRS de destination")
-        target_crs_layout = QHBoxLayout()
+        <h3>🖱️ Sélection interactive</h3>
+        <ul>
+            <li>Activez le sélecteur</li>
+            <li>Cliquez sur la carte</li>
+            <li>Obtenez les coordonnées converties</li>
+        </ul>
         
-        self.export_crs_combo = QComboBox()
-        self.populate_crs_combo(self.export_crs_combo)
-        self.set_combo_by_name(self.export_crs_combo, "🇧🇫 BFTM (Burkina Faso) - OFFICIEL")
-        target_crs_layout.addWidget(self.export_crs_combo)
+        <h3>🇧🇫 BFTM (Burkina Faso)</h3>
+        <ul>
+            <li>Ellipsoïde: GRS80</li>
+            <li>Méridien central: 1.5° Ouest</li>
+            <li>Fausse est: 600 000 m</li>
+            <li>Fausse nord: 0 m</li>
+            <li>Facteur d'échelle: 0.9996</li>
+        </ul>
         
-        target_crs_group.setLayout(target_crs_layout)
-        layout.addWidget(target_crs_group)
+        <h3>🔧 CRS personnalisé</h3>
+        <p>Sélectionnez "--- Personnalisé (PROJ) ---" et entrez votre chaîne PROJ</p>
+        <p>Exemple: <code>+proj=longlat +ellps=clrk80 +towgs84=-118,-14,218</code></p>
         
-        options_group = QGroupBox("Options")
-        options_layout = QGridLayout()
+        <h3>📞 Support</h3>
+        <p>Email: jeanbaptiste.kibora@tic.gov.bf</p>
+        <p>GitHub: https://github.com/geomatic-web/universal_xy_converter</p>
+        """)
+        layout.addWidget(help_text)
         
-        options_layout.addWidget(QLabel("Nom couche exportée:"), 0, 0)
-        self.export_layer_name = QLineEdit("couche_convertie")
-        options_layout.addWidget(self.export_layer_name, 0, 1)
-        
-        self.keep_original_fields = QCheckBox("Conserver les champs")
-        self.keep_original_fields.setChecked(True)
-        options_layout.addWidget(self.keep_original_fields, 1, 0, 1, 2)
-        
-        self.add_coords_fields = QCheckBox("Ajouter champs X_SRC, Y_SRC, X_DST, Y_DST")
-        self.add_coords_fields.setChecked(True)
-        options_layout.addWidget(self.add_coords_fields, 2, 0, 1, 2)
-        
-        options_group.setLayout(options_layout)
-        layout.addWidget(options_group)
-        
-        self.export_btn = QPushButton("Exporter la couche")
-        self.export_btn.clicked.connect(self.export_layer)
-        layout.addWidget(self.export_btn)
-        
-        self.export_log = QTextEdit()
-        self.export_log.setReadOnly(True)
-        self.export_log.setMaximumHeight(150)
-        layout.addWidget(self.export_log)
-        
-        self.export_tab.setLayout(layout)
-    
-    def setup_crs_tab(self):
-        """Affiche la liste des systèmes disponibles."""
-        layout = QVBoxLayout()
-        
-        info_label = QLabel("Systèmes de coordonnées disponibles pour la conversion")
-        info_label.setStyleSheet("font-weight: bold;")
-        layout.addWidget(info_label)
-        
-        self.crs_table = QTextEdit()
-        self.crs_table.setReadOnly(True)
-        
-        crs_text = "📋 SYSTÈMES DE COORDONNÉES DISPONIBLES\n\n"
-        crs_text += "🇧🇫 SYSTÈME NATIONAL DU BURKINA FASO\n"
-        crs_text += "• BFTM (Burkina Faso Transverse Mercator) - OFFICIEL\n"
-        crs_text += "  - Ellipsoïde: GRS80\n"
-        crs_text += "  - Méridien central: 1.5° Ouest\n"
-        crs_text += "  - Facteur d'échelle: 0.9996\n"
-        crs_text += "  - Fausse est: 600 000 m\n"
-        crs_text += "  - Fausse nord: 0 m\n\n"
-        
-        crs_text += "🌍 SYSTÈMES GLOBAUX\n"
-        crs_text += "• WGS 84 (degrés) - EPSG:4326\n"
-        crs_text += "• WGS 84 (Web Mercator) - EPSG:3857\n"
-        crs_text += "• WGS 84 / UTM (toutes zones 1-60 Nord et Sud)\n\n"
-        
-        crs_text += "🌍 SYSTÈMES PAR RÉGION\n"
-        crs_text += "• Afrique: Adindan, Clarke 1880, Arc 1950/1960\n"
-        crs_text += "• Europe: ETRS89, RGF93 (France), DHDN (Allemagne), OSGB (UK)\n"
-        crs_text += "• Amérique: NAD83 (USA/Canada), SIRGAS (Amérique Sud)\n"
-        crs_text += "• Asie: CGCS2000 (Chine), JGD2011 (Japon)\n"
-        crs_text += "• Océanie: GDA2020 (Australie), NZGD2000 (Nouvelle Zélande)\n\n"
-        
-        crs_text += "🔧 CRS PERSONNALISÉS\n"
-        crs_text += "• Vous pouvez définir vos propres CRS avec des chaînes PROJ\n"
-        crs_text += "• Exemple: +proj=longlat +ellps=clrk80 +towgs84=-118,-14,218\n\n"
-        
-        crs_text += "💡 CONSEILS\n"
-        crs_text += "• Pour les anciennes données burkinabè, utilisez Adindan UTM 30N\n"
-        crs_text += "• La précision des conversions dépend des paramètres de transformation"
-        crs_text += "• -----------------------------------"
-        crs_text += "• Contacter moi au +22664412514 en cas de difficultés"
-        
-        self.crs_table.setText(crs_text)
-        layout.addWidget(self.crs_table)
-        
-        self.crs_tab.setLayout(layout)
+        self.about_tab.setLayout(layout)
     
     def activate_point_picker(self):
         """Active l'outil de sélection de points."""
@@ -1046,17 +967,8 @@ class UniversalXYConverterDialog(QDialog):
             
             self.interactive_result.setText(f"{transformed.x():.6f}, {transformed.y():.6f}")
             
-            if target_crs_text.startswith("🇧🇫 BFTM"):
-                is_valid = self.validator.validate_point(transformed.x(), transformed.y())
-                if is_valid:
-                    self.interactive_validation.setText("✓ Dans les limites du Burkina Faso")
-                    self.interactive_validation.setStyleSheet("color: green;")
-                else:
-                    self.interactive_validation.setText("⚠️ Hors limites du Burkina Faso")
-                    self.interactive_validation.setStyleSheet("color: orange;")
-            else:
-                self.interactive_validation.setText("✓ Conversion réussie")
-                self.interactive_validation.setStyleSheet("color: green;")
+            self.interactive_validation.setText("✓ Conversion réussie")
+            self.interactive_validation.setStyleSheet("color: green;")
             
             if self.rubber_band:
                 self.rubber_band.reset()
@@ -1071,93 +983,3 @@ class UniversalXYConverterDialog(QDialog):
         clipboard = QApplication.clipboard()
         clipboard.setText(self.interactive_result.text())
         self.iface.messageBar().pushMessage("Succès", "Résultat copié", level=1)
-    
-    def refresh_layers(self):
-        """Rafraîchit la liste des couches."""
-        self.layer_combo.clear()
-        for layer in QgsProject.instance().mapLayers().values():
-            if layer.type() == 0:  # Vector layer
-                self.layer_combo.addItem(layer.name(), layer.id())
-    
-    def export_layer(self):
-        """Exporte une couche vers le CRS choisi."""
-        layer_id = self.layer_combo.currentData()
-        if not layer_id:
-            QMessageBox.warning(self, "Attention", "Sélectionnez une couche")
-            return
-        
-        layer = QgsProject.instance().mapLayer(layer_id)
-        if not layer:
-            return
-        
-        target_crs_text = self.export_crs_combo.currentText()
-        if target_crs_text == "--- Personnalisé (PROJ) ---":
-            target_crs = self.bftm_crs
-        else:
-            target_crs = self.available_crs.get(target_crs_text, self.bftm_crs)
-        
-        export_name = self.export_layer_name.text() or "couche_convertie"
-        
-        new_layer = QgsVectorLayer(f"{layer.wkbType()}?crs={target_crs.authid()}", export_name, "memory")
-        
-        if not new_layer.isValid():
-            QMessageBox.warning(self, "Erreur", "Création couche impossible")
-            return
-        
-        provider = new_layer.dataProvider()
-        
-        fields = []
-        if self.keep_original_fields.isChecked():
-            fields.extend(layer.fields())
-        if self.add_coords_fields.isChecked():
-            fields.extend([
-                QgsField("X_SOURCE", QVariant.Double),
-                QgsField("Y_SOURCE", QVariant.Double),
-                QgsField("X_TARGET", QVariant.Double),
-                QgsField("Y_TARGET", QVariant.Double)
-            ])
-        
-        provider.addAttributes(fields)
-        new_layer.updateFields()
-        
-        transform = QgsCoordinateTransform(layer.crs(), target_crs, QgsProject.instance().transformContext())
-        
-        valid = 0
-        new_layer.startEditing()
-        
-        for feature in layer.getFeatures():
-            geom = feature.geometry()
-            if geom and not geom.isEmpty():
-                try:
-                    original_geom = geom.clone()
-                    geom.transform(transform)
-                    
-                    new_feature = QgsFeature(new_layer.fields())
-                    new_feature.setGeometry(geom)
-                    
-                    idx = 0
-                    if self.keep_original_fields.isChecked():
-                        for field in layer.fields():
-                            new_feature.setAttribute(idx, feature[field.name()])
-                            idx += 1
-                    
-                    if self.add_coords_fields.isChecked():
-                        centroid_orig = original_geom.centroid().asPoint()
-                        centroid_dest = geom.centroid().asPoint()
-                        new_feature.setAttribute(idx, centroid_orig.x())
-                        new_feature.setAttribute(idx + 1, centroid_orig.y())
-                        new_feature.setAttribute(idx + 2, centroid_dest.x())
-                        new_feature.setAttribute(idx + 3, centroid_dest.y())
-                    
-                    provider.addFeature(new_feature)
-                    valid += 1
-                    
-                except Exception as e:
-                    self.export_log.append(f"Erreur: {str(e)}")
-        
-        new_layer.commitChanges()
-        QgsProject.instance().addMapLayer(new_layer)
-        
-        self.export_log.clear()
-        self.export_log.append(f"✅ Export terminé: {valid} entités converties")
-        QMessageBox.information(self, "Succès", f"Export terminé\n{valid} entités converties")
