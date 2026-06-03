@@ -2,18 +2,25 @@
 name=Universal XY Converter
 description=Universal coordinate converter supporting all QGIS CRS with native BFTM support for Burkina Faso. Convert between any CRS: WGS84, UTM zones 1-60, Adindan, NAD83, ETRS89, GDA2020, and custom PROJ strings. Features: single conversion, batch CSV processing, interactive map picking.
 version=1.0.3
+name=universal_xy_converter
+description=Universal coordinate converter supporting all QGIS CRS (200+ systems) with native BFTM support for Burkina Faso. Convert between any CRS: WGS84, UTM zones 1-60, Adindan, NAD83, ETRS89, GDA2020, and custom PROJ strings. Features: single conversion, batch CSV processing, interactive map picking, direct vector layer export.
+version=1.0.2
 qgisMinimumVersion=3.0
 qgisMaximumVersion=3.99
 author=Bazikité Jean-Baptiste KIBORA | GIS Developer
 email=jeanbaptiste.kibora@tic.gov.bf
 about=Universal XY Converter is a powerful QGIS plugin for coordinate conversion between any Coordinate Reference Systems (CRS) available in QGIS, with native support for BFTM (Burkina Faso Transverse Mercator). Features: single conversion, batch CSV processing, interactive map picking.
+about=Universal XY Converter is a powerful QGIS plugin for coordinate conversion between any Coordinate Reference Systems (CRS) available in QGIS, with native support for BFTM (Burkina Faso Transverse Mercator). Features: single conversion, batch CSV processing, interactive map picking, direct vector layer export. Includes automatic validation of coordinates within Burkina Faso national boundaries. Ideal for GIS professionals working in West Africa and anyone needing coordinate transformations.
 tracker=https://github.com/geomatic-web/universal_xy_converter/issues
 repository=https://github.com/geomatic-web/universal_xy_converter
 homepage=https://github.com/geomatic-web/universal_xy_converter
 category=Data Conversion
 license=GPL-3.0-only
-
+icon=icon.png
+keywords=qgis,plugin,coordinate-conversion,bftm,burkina-faso,crs,utm,wgs84,gis
 [parameters]
 source_crs=All QGIS CRS
 target_crs=All QGIS CRS
 format_support=CSV, Shapefile
+format_support=CSV, Shapefile, Vector layers
+
