@@ -1,9 +1,8 @@
 import os
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
+from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QMessageBox
-from qgis.core import QgsProject, QgsVectorLayer, QgsCoordinateReferenceSystem
 from .bftm_converter_dialog import UniversalXYConverterDialog
+
 
 class UniversalXYConverter:
     def __init__(self, iface):
@@ -16,12 +15,16 @@ class UniversalXYConverter:
 
     def initGui(self):
         """Crée l'entrée dans le menu et la barre d'outils."""
+        # Chemin vers l'icône
         icon_path = os.path.join(self.plugin_dir, 'icon.png')
-        if not os.path.exists(icon_path):
-            icon = QIcon()
-        else:
+
+        # Si l'icône n'existe pas, utiliser l'icône par défaut
+        if os.path.exists(icon_path):
             icon = QIcon(icon_path)
-            
+        else:
+            # Icône par défaut (optionnel)
+            icon = QIcon()
+
         action = QAction(icon, 'Universal XY Converter', self.iface.mainWindow())
         action.triggered.connect(self.run)
         self.iface.addPluginToMenu(self.menu, action)
