@@ -185,13 +185,54 @@
                 align-items: center;
             }
         }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .plugin-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .plugin-icon img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+        }
+        .header-text {
+            text-align: left;
+        }
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .header-text {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>🌍 Universal XY Converter</h1>
-        <p>Extension QGIS pour la conversion universelle de coordonnées</p>
-        <div class="badge">Version 1.0.2 | Plugin ID: 5343</div>
+        <div class="header-content">
+            <div class="plugin-icon">
+                <img src="icon.png" alt="Universal XY Converter">
+            </div>
+            <div class="header-text">
+                <h1>Universal XY Converter</h1>
+                <p>Extension QGIS pour la conversion universelle de coordonnées</p>
+                <div class="badge">Version 1.0.2 | Plugin ID: 5343</div>
+            </div>
+        </div>
     </header>
 
     <div class="container">
