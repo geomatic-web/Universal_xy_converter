@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal XY Converter - Guide d'utilisation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, #2980b9, #1a5276);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .badge {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+        nav {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #2980b9;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        nav ul li a:hover {
+            background: #2980b9;
+            color: white;
+        }
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .section h2 {
+            color: #2980b9;
+            border-bottom: 3px solid #2980b9;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .section h3 {
+            color: #1a5276;
+            margin: 20px 0 10px 0;
+        }
+        .section h4 {
+            color: #555;
+            margin: 15px 0 10px 0;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+            color: #c7254e;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+            margin: 15px 0;
+        }
+        .note {
+            background: #fef9e6;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .warning {
+            background: #fee;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: #e8f8f5;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .tip {
+            background: #e3f2fd;
+            border-left: 4px solid #2980b9;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #2980b9;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #eee;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-size: 0.9em;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌍 Universal XY Converter</h1>
+        <p>Extension QGIS pour la conversion universelle de coordonnées</p>
+        <div class="badge">Version 1.0.2 | Plugin ID: 5343</div>
+    </header>
+
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#installation">📥 Installation</a></li>
+                <li><a href="#utilisation">🚀 Utilisation</a></li>
+                <li><a href="#crs-personnalises">🔧 CRS Personnalisés</a></li>
+                <li><a href="#astuces">💡 Astuces</a></li>
+                <li><a href="#erreurs">❌ Erreurs</a></li>
+                <li><a href="#exemples">📊 Exemples</a></li>
+                <li><a href="#support">📞 Support</a></li>
+            </ul>
+        </nav>
+
+        <!-- ==================== INSTALLATION ==================== -->
+        <div id="installation" class="section">
+            <h2>📥 Installation</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>📦 Depuis le dépôt QGIS</h3>
+                    <ol>
+                        <li>Ouvrez QGIS</li>
+                        <li>Menu <code>Extensions</code> → <code>Gérer les extensions</code></li>
+                        <li>Recherchez <strong>"Universal XY Converter"</strong></li>
+                        <li>Cliquez sur <strong>Installer</strong></li>
+                    </ol>
+                </div>
+                <div class="card">
+                    <h3>🐙 Depuis GitHub</h3>
+                    <ol>
+                        <li>Téléchargez le ZIP depuis <a href="https://github.com/geomatic-web/universal_xy_converter">GitHub</a></li>
+                        <li>QGIS → <code>Extensions</code> → <code>Installer à partir d'un ZIP</code></li>
+                        <li>Sélectionnez le fichier ZIP</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== UTILISATION ==================== -->
+        <div id="utilisation" class="section">
+            <h2>🚀 Utilisation</h2>
+            
+            <h3>📍 Onglet 1 : Conversion simple</h3>
+            <ol>
+                <li>Sélectionnez le <strong>CRS source</strong> (ex: WGS 84 degrés)</li>
+                <li>Sélectionnez le <strong>CRS cible</strong> (ex: BFTM Burkina Faso)</li>
+                <li>Choisissez le <strong>format</strong> (DD, DMS ou Mètres)</li>
+                <li>Entrez les coordonnées X et Y</li>
+                <li>Cliquez sur <strong>"Convertir →"</strong></li>
+            </ol>
+
+            <h3>📁 Onglet 2 : Traitement batch CSV</h3>
+            <ol>
+                <li>Cliquez sur <strong>"Parcourir"</strong> pour charger votre fichier CSV</li>
+                <li>Sélectionnez les colonnes X et Y</li>
+                <li>Choisissez le séparateur (;, virgule, |, tabulation)</li>
+                <li>Sélectionnez les CRS source et cible</li>
+                <li>Choisissez le format des coordonnées dans le fichier</li>
+                <li>Cliquez sur <strong>"Lancer la conversion"</strong></li>
+            </ol>
+
+            <h3>🖱️ Onglet 3 : Sélection interactive</h3>
+            <ol>
+                <li>Choisissez le <strong>système cible</strong> pour l'affichage</li>
+                <li>Sélectionnez le <strong>format d'affichage</strong> (DD, DMS, Mètres)</li>
+                <li>Cliquez sur <strong>"Activer le sélecteur"</strong></li>
+                <li>Cliquez sur la carte</li>
+                <li>Les coordonnées converties s'affichent instantanément</li>
+            </ol>
+
+            <h3>📖 Onglet 4 : Aide rapide</h3>
+            <p>Documentation intégrée avec les formats supportés et exemples.</p>
+        </div>
+
+        <!-- ==================== CRS PERSONNALISÉS ==================== -->
+        <div id="crs-personnalises" class="section">
+            <h2>🔧 Définition de CRS personnalisés</h2>
+            <p>Pour utiliser un système de coordonnées qui n'est pas dans la liste, sélectionnez <strong>"--- Personnalisé (PROJ) ---"</strong> et entrez une chaîne PROJ.</p>
+
+            <h3>📐 Structure d'une chaîne PROJ</h3>
+            <pre>+proj=TYPE +param1=valeur1 +param2=valeur2 +param3=valeur3 +units=m</pre>
+
+            <h3>🌍 Exemples de CRS personnalisés</h3>
+            
+            <h4>1. Adindan (ancien système du Burkina Faso)</h4>
+            <pre>+proj=longlat +ellps=clrk80 +towgs84=-118,-14,218</pre>
+            <div class="tip">
+                💡 <strong>Explication :</strong> Coordonnées géographiques (degrés) avec ellipsoïde Clarke 1880 et transformation vers WGS84.
+            </div>
+
+            <h4>2. Adindan UTM 30N (pour données en mètres)</h4>
+            <pre>+proj=utm +zone=30 +ellps=clrk80 +towgs84=-118,-14,218 +units=m</pre>
+
+            <h4>3. Lambert 93 (France)</h4>
+            <pre>+proj=lcc +lat_1=44 +lat_2=49 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +units=m</pre>
+
+            <h4>4. Swiss LV95 (Suisse)</h4>
+            <pre>+proj=stere +lat_0=46.9524056 +lon_0=7.43958333 +k=1 +x_0=2600000 +y_0=1200000 +ellps=GRS80 +units=m</pre>
+
+            <h4>5. Projection personnalisée type BFTM</h4>
+            <pre>+proj=tmerc +lat_0=0 +lon_0=-1.5 +k=0.9996 +x_0=600000 +y_0=0 +ellps=GRS80 +units=m</pre>
+
+            <h4>6. WGS84 (degrés) vers Adindan (transformation inverse)</h4>
+            <pre>+proj=longlat +ellps=clrk80 +towgs84=118,14,-218</pre>
+
+            <h4>7. Clarke 1880 UTM 30N (Afrique du Sud)</h4>
+            <pre>+proj=utm +zone=30 +ellps=clrk80 +towgs84=-118,-14,218 +units=m</pre>
+
+            <h4>8. NAD83 (Amérique du Nord)</h4>
+            <pre>+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0</pre>
+
+            <h4>9. UTM zone 31N personnalisé</h4>
+            <pre>+proj=utm +zone=31 +ellps=WGS84 +units=m</pre>
+
+            <div class="note">
+                📌 <strong>Paramètres PROJ courants :</strong><br>
+                <code>+proj=longlat</code> : coordonnées géographiques (degrés)<br>
+                <code>+proj=utm</code> : projection UTM<br>
+                <code>+proj=tmerc</code> : Mercator transverse<br>
+                <code>+proj=lcc</code> : Lambert conique conforme<br>
+                <code>+proj=stere</code> : projection stéréographique<br>
+                <code>+zone=XX</code> : zone UTM (1-60)<br>
+                <code>+ellps=GRS80</code> : ellipsoïde GRS80<br>
+                <code>+towgs84=dx,dy,dz</code> : transformation vers WGS84<br>
+                <code>+units=m</code> : unités en mètres
+            </div>
+        </div>
+
+        <!-- ==================== ASTUCES ==================== -->
+        <div id="astuces" class="section">
+            <h2>💡 Astuces et bonnes pratiques</h2>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>📝 Saisie DMS</h3>
+                    <ul>
+                        <li>Utilisez <code>°</code>, <code>'</code>, <code>"</code></li>
+                        <li>Directions : <code>N,S,E,W,O</code></li>
+                        <li>Exemple : <code>12°30'15" N</code></li>
+                        <li>Sans direction, la valeur est positive</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🔄 Échanger source/cible</h3>
+                    <p>Utilisez le bouton <strong>"⟷ Échanger source/cible"</strong> pour inverser la conversion.</p>
+                </div>
+                <div class="card">
+                    <h3>📋 Copier les résultats</h3>
+                    <p>Cliquez sur <strong>"Copier les résultats"</strong> pour copier les coordonnées converties dans le presse-papier.</p>
+                </div>
+                <div class="card">
+                    <h3>📁 Format CSV pour batch</h3>
+                    <p>Votre fichier CSV doit être encodé en <strong>UTF-8</strong>.</p>
+                    <pre>id;longitude;latitude;nom
+1;12°30'15"N;-1°30'0"W;Ouagadougou</pre>
+                </div>
+                <div class="card">
+                    <h3>🇧🇫 BFTM - Burkina Faso</h3>
+                    <ul>
+                        <li>Ellipsoïde: <strong>GRS80</strong></li>
+                        <li>Méridien central: <strong>1.5° Ouest</strong></li>
+                        <li>Fausse est: <strong>600 000 m</strong></li>
+                        <li>Facteur d'échelle: <strong>0.9996</strong></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🎯 Notations françaises</h3>
+                    <ul>
+                        <li><strong>O</strong> = Ouest (West)</li>
+                        <li><strong>E</strong> = Est (East)</li>
+                        <li><strong>N</strong> = Nord (North)</li>
+                        <li><strong>S</strong> = Sud (South)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tip">
+                💡 <strong>Astuce :</strong> Si vous avez des coordonnées avec des virgules comme séparateur décimal (ex: 12,5042), remplacez les virgules par des points avant conversion.
+            </div>
+        </div>
+
+        <!-- ==================== ERREURS ==================== -->
+        <div id="erreurs" class="section">
+            <h2>❌ Résolution des erreurs courantes</h2>
+
+            <h3>🔴 "Can not decode: codec"</h3>
+            <div class="warning">
+                <strong>📖 Message d'erreur :</strong> <code>Can not decode: codec</code>
+            </div>
+            <div class="success">
+                <strong>🔧 Solution :</strong>
+                <ol>
+                    <li>Ouvrez votre fichier CSV avec <strong>Notepad++</strong> ou <strong>Visual Studio Code</strong></li>
+                    <li>Vérifiez l'encodage : doit être <strong>UTF-8</strong> (sans BOM)</li>
+                    <li>Dans QGIS, allez dans <code>Paramètres</code> → <code>Options</code> → <code>Locale</code></li>
+                    <li>Vérifiez que le séparateur décimal est le <strong>point (.)</strong> et non la virgule (,)</li>
+                </ol>
+            </div>
+
+            <h3>🔴 Configuration Windows pour les séparateurs décimaux</h3>
+            <div class="warning">
+                <strong>📖 Problème :</strong> Windows utilise la virgule (,) comme séparateur décimal.
+            </div>
+            <div class="success">
+                <strong>🔧 Solution :</strong>
+                <ol>
+                    <li>Allez dans <code>Panneau de configuration</code> → <code>Heure et langue</code> → <code>Langue et région</code> → <code>Numéro</code></li>
+                    <li>Changez le <strong>Symbole décimal</strong> de <code>,</code> (virgule) à <code>.</code> (point)</li>
+                    <li>Assurez-vous que le <strong>Séparateur de liste</strong> est <code>;</code> (point-virgule)</li>
+                    <li>Redémarrez QGIS</li>
+                </ol>
+            </div>
+
+            <h3>🔴 "CRS source invalide" ou "CRS cible invalide"</h3>
+            <div class="success">
+                <strong>🔧 Solutions :</strong>
+                <ul>
+                    <li>Vérifiez que le code EPSG est correct (ex: EPSG:4326 pour WGS84)</li>
+                    <li>Assurez-vous que la chaîne PROJ personnalisée est correctement formatée</li>
+                    <li>Vérifiez que les paramètres comme <code>+zone</code> sont valides</li>
+                </ul>
+            </div>
+
+            <h3>🔴 "Coordonnées invalides" ou format DMS erroné</h3>
+            <div class="success">
+                <strong>🔧 Solutions :</strong>
+                <ul>
+                    <li>Utilisez les symboles corrects : <code>°</code> (Alt+248 ou degrés), <code>'</code> (apostrophe), <code>"</code> (guillemet)</li>
+                    <li>Pour Windows : tapez les symboles via la table des caractères (<code>Win + .</code>)</li>
+                    <li>Exemple valide : <code>12°30'15" N</code> (avec espaces)</li>
+                </ul>
+            </div>
+
+            <h3>🔴 Fichier CSV ignoré (lignes non converties)</h3>
+            <div class="success">
+                <strong>🔧 Solutions :</strong>
+                <ul>
+                    <li>Vérifiez l'encodage (doit être UTF-8)</li>
+                    <li>Vérifiez le séparateur (;, virgule, |, tabulation)</li>
+                    <li>Vérifiez qu'il n'y a pas d'en-têtes mal formés</li>
+                    <li>Assurez-vous que les colonnes X et Y sont correctement sélectionnées</li>
+                </ul>
+            </div>
+
+            <h3>🔴 La conversion batch ne produit pas le même résultat que la conversion simple</h3>
+            <div class="success">
+                <strong>🔧 Solutions :</strong>
+                <ul>
+                    <li>Vérifiez que le format source (DD/DMS/Mètres) est correctement sélectionné</li>
+                    <li>Vérifiez que les CRS source et cible sont identiques</li>
+                    <li>Assurez-vous que les données CSV n'ont pas d'espaces invisibles</li>
+                </ul>
+            </div>
+
+            <div class="note">
+                📌 <strong>Bon à savoir :</strong> La plupart des erreurs viennent de problèmes d'encodage (UTF-8) ou de séparateurs décimaux (point vs virgule).
+            </div>
+        </div>
+
+        <!-- ==================== EXEMPLES ==================== -->
+        <div id="exemples" class="section">
+            <h2>📊 Exemples de conversion</h2>
+
+            <h3>🌍 WGS84 (DD) → BFTM (Burkina Faso)</h3>
+            <table>
+                <tr><th>Point</th><th>X (Longitude)</th><th>Y (Latitude)</th><th>X_BFTM</th><th>Y_BFTM</th></tr>
+                <tr><td>Ouagadougou</td><td>-1.5°</td><td>12.3°</td><td>600,000 m</td><td>1,360,000 m</td></tr>
+                <tr><td>Bobo-Dioulasso</td><td>-4.3°</td><td>11.2°</td><td>350,000 m</td><td>1,240,000 m</td></tr>
+                <tr><td>Koudougou</td><td>-2.4°</td><td>13.3°</td><td>480,000 m</td><td>1,470,000 m</td></tr>
+            </table>
+
+            <h3>🌍 WGS84 (DMS) → BFTM</h3>
+            <table>
+                <tr><th>Saisie DMS</th><th>X_BFTM</th><th>Y_BFTM</th></tr>
+                <tr><td>1°30'0" O, 12°30'15" N</td><td>600,000 m</td><td>1,360,000 m</td></tr>
+                <tr><td>4°18'0" O, 11°12'0" N</td><td>350,000 m</td><td>1,240,000 m</td></tr>
+            </table>
+
+            <h3>📐 UTM 30N → BFTM</h3>
+            <table>
+                <tr><th>UTM 30N X</th><th>UTM 30N Y</th><th>BFTM X</th><th>BFTM Y</th></tr>
+                <tr><td>679,246 m</td><td>1,359,847 m</td><td>600,000 m</td><td>1,360,000 m</td></tr>
+                <tr><td>375,000 m</td><td>1,238,000 m</td><td>350,000 m</td><td>1,240,000 m</td></tr>
+            </table>
+
+            <h3>📁 Exemple de fichier CSV pour batch</h3>
+            <pre>id,longitude,latitude,ville
+1,1°30'0" O,12°30'15" N,Ouagadougou
+2,4°18'0" O,11°12'0" N,Bobo-Dioulasso
+3,2°24'0" O,13°18'0" N,Koudougou</pre>
+
+            <div class="note">
+                📌 <strong>Configuration du batch :</strong><br>
+                - Séparateur : <code>,</code> (virgule)<br>
+                - Format des coordonnées : <code>Degrés/Minutes/Secondes (DMS)</code><br>
+                - CRS source : <code>🌍 WGS 84 (degrés)</code><br>
+                - CRS cible : <code>🇧🇫 BFTM (Burkina Faso)</code>
+            </div>
+        </div>
+
+        <!-- ==================== SUPPORT ==================== -->
+        <div id="support" class="section">
+            <h2>📞 Support et contact</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>📧 Email</h3>
+                    <p><a href="mailto:jeanbaptiste.kibora@tic.gov.bf">jeanbaptiste.kibora@tic.gov.bf</a></p>
+                </div>
+                <div class="card">
+                    <h3>🐙 GitHub</h3>
+                    <p><a href="https://github.com/geomatic-web/universal_xy_converter">github.com/geomatic-web/universal_xy_converter</a></p>
+                </div>
+                <div class="card">
+                    <h3>🐛 Signaler un bug</h3>
+                    <p><a href="https://github.com/geomatic-web/universal_xy_converter/issues">Ouvrir une issue</a></p>
+                </div>
+                <div class="card">
+                    <h3>📱 Téléphone</h3>
+                    <p>+226 64 41 25 14 / +226 68 69 04 11</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 Bazikité Jean-Baptiste KIBORA | Universal XY Converter - Sous licence GPL v3</p>
+            <p>Plugin ID: 5343 | Version 1.0.2</p>
+        </footer>
+    </div>
+</body>
+</html>
