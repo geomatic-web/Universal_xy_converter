@@ -238,22 +238,22 @@
     <div class="container">
         <nav>
             <ul>
-                <li><a href="#installation">📥 Installation</a></li>
-                <li><a href="#utilisation">🚀 Utilisation</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#utilisation">Utilisation</a></li>
                 <li><a href="#crs-personnalises">🔧 CRS Personnalisés</a></li>
-                <li><a href="#astuces">💡 Astuces</a></li>
-                <li><a href="#erreurs">❌ Erreurs</a></li>
-                <li><a href="#exemples">📊 Exemples</a></li>
-                <li><a href="#support">📞 Support</a></li>
+                <li><a href="#astuces">Astuces</a></li>
+                <li><a href="#erreurs">Erreurs</a></li>
+                <li><a href="#exemples">Exemples</a></li>
+                <li><a href="#support">Support</a></li>
             </ul>
         </nav>
 
         <!-- ==================== INSTALLATION ==================== -->
         <div id="installation" class="section">
-            <h2>📥 Installation</h2>
+            <h2>Installation</h2>
             <div class="grid-2">
                 <div class="card">
-                    <h3>📦 Depuis le dépôt QGIS</h3>
+                    <h3>Depuis le dépôt QGIS</h3>
                     <ol>
                         <li>Ouvrez QGIS</li>
                         <li>Menu <code>Extensions</code> → <code>Gérer les extensions</code></li>
@@ -262,7 +262,7 @@
                     </ol>
                 </div>
                 <div class="card">
-                    <h3>🐙 Depuis GitHub</h3>
+                    <h3>Depuis GitHub</h3>
                     <ol>
                         <li>Téléchargez le ZIP depuis <a href="https://github.com/geomatic-web/universal_xy_converter">GitHub</a></li>
                         <li>QGIS → <code>Extensions</code> → <code>Installer à partir d'un ZIP</code></li>
@@ -274,9 +274,9 @@
 
         <!-- ==================== UTILISATION ==================== -->
         <div id="utilisation" class="section">
-            <h2>🚀 Utilisation</h2>
+            <h2>Utilisation</h2>
             
-            <h3>📍 Onglet 1 : Conversion simple</h3>
+            <h3>Onglet 1 : Conversion simple</h3>
             <ol>
                 <li>Sélectionnez le <strong>CRS source</strong> (ex: WGS 84 degrés)</li>
                 <li>Sélectionnez le <strong>CRS cible</strong> (ex: BFTM Burkina Faso)</li>
@@ -285,7 +285,7 @@
                 <li>Cliquez sur <strong>"Convertir →"</strong></li>
             </ol>
 
-            <h3>📁 Onglet 2 : Traitement batch CSV</h3>
+            <h3>Onglet 2 : Traitement batch CSV</h3>
             <ol>
                 <li>Cliquez sur <strong>"Parcourir"</strong> pour charger votre fichier CSV</li>
                 <li>Sélectionnez les colonnes X et Y</li>
@@ -313,15 +313,15 @@
             <h2>🔧 Définition de CRS personnalisés</h2>
             <p>Pour utiliser un système de coordonnées qui n'est pas dans la liste, sélectionnez <strong>"--- Personnalisé (PROJ) ---"</strong> et entrez une chaîne PROJ.</p>
 
-            <h3>📐 Structure d'une chaîne PROJ</h3>
+            <h3>Structure d'une chaîne PROJ</h3>
             <pre>+proj=TYPE +param1=valeur1 +param2=valeur2 +param3=valeur3 +units=m</pre>
 
-            <h3>🌍 Exemples de CRS personnalisés</h3>
+            <h3>Exemples de CRS personnalisés</h3>
             
             <h4>1. Adindan (ancien système du Burkina Faso)</h4>
             <pre>+proj=longlat +ellps=clrk80 +towgs84=-118,-14,218</pre>
             <div class="tip">
-                💡 <strong>Explication :</strong> Coordonnées géographiques (degrés) avec ellipsoïde Clarke 1880 et transformation vers WGS84.
+                <strong>Explication :</strong> Coordonnées géographiques (degrés) avec ellipsoïde Clarke 1880 et transformation vers WGS84.
             </div>
 
             <h4>2. Adindan UTM 30N (pour données en mètres)</h4>
@@ -349,7 +349,7 @@
             <pre>+proj=utm +zone=31 +ellps=WGS84 +units=m</pre>
 
             <div class="note">
-                📌 <strong>Paramètres PROJ courants :</strong><br>
+                <strong>Paramètres PROJ courants :</strong><br>
                 <code>+proj=longlat</code> : coordonnées géographiques (degrés)<br>
                 <code>+proj=utm</code> : projection UTM<br>
                 <code>+proj=tmerc</code> : Mercator transverse<br>
@@ -364,11 +364,11 @@
 
         <!-- ==================== ASTUCES ==================== -->
         <div id="astuces" class="section">
-            <h2>💡 Astuces et bonnes pratiques</h2>
+            <h2>Astuces et bonnes pratiques</h2>
 
             <div class="grid-2">
                 <div class="card">
-                    <h3>📝 Saisie DMS</h3>
+                    <h3>Saisie DMS</h3>
                     <ul>
                         <li>Utilisez <code>°</code>, <code>'</code>, <code>"</code></li>
                         <li>Directions : <code>N,S,E,W,O</code></li>
@@ -377,7 +377,7 @@
                     </ul>
                 </div>
                 <div class="card">
-                    <h3>🔄 Échanger source/cible</h3>
+                    <h3>Échanger source/cible</h3>
                     <p>Utilisez le bouton <strong>"⟷ Échanger source/cible"</strong> pour inverser la conversion.</p>
                 </div>
                 <div class="card">
@@ -385,7 +385,7 @@
                     <p>Cliquez sur <strong>"Copier les résultats"</strong> pour copier les coordonnées converties dans le presse-papier.</p>
                 </div>
                 <div class="card">
-                    <h3>📁 Format CSV pour batch</h3>
+                    <h3>Format CSV pour batch</h3>
                     <p>Votre fichier CSV doit être encodé en <strong>UTF-8</strong>.</p>
                     <pre>id;longitude;latitude;nom
 1;12°30'15"N;-1°30'0"W;Ouagadougou</pre>
@@ -400,7 +400,7 @@
                     </ul>
                 </div>
                 <div class="card">
-                    <h3>🎯 Notations françaises</h3>
+                    <h3>Notations françaises</h3>
                     <ul>
                         <li><strong>O</strong> = Ouest (West)</li>
                         <li><strong>E</strong> = Est (East)</li>
@@ -411,15 +411,15 @@
             </div>
 
             <div class="tip">
-                💡 <strong>Astuce :</strong> Si vous avez des coordonnées avec des virgules comme séparateur décimal (ex: 12,5042), remplacez les virgules par des points avant conversion.
+                <strong>Astuce :</strong> Si vous avez des coordonnées avec des virgules comme séparateur décimal (ex: 12,5042), remplacez les virgules par des points avant conversion.
             </div>
         </div>
 
         <!-- ==================== ERREURS ==================== -->
         <div id="erreurs" class="section">
-            <h2>❌ Résolution des erreurs courantes</h2>
+            <h2> Résolution des erreurs courantes</h2>
 
-            <h3>🔴 "Can not decode: codec"</h3>
+            <h3>"Can not decode: codec"</h3>
             <div class="warning">
                 <strong>📖 Message d'erreur :</strong> <code>Can not decode: codec</code>
             </div>
@@ -433,9 +433,9 @@
                 </ol>
             </div>
 
-            <h3>🔴 Configuration Windows pour les séparateurs décimaux</h3>
+            <h3>Configuration Windows pour les séparateurs décimaux</h3>
             <div class="warning">
-                <strong>📖 Problème :</strong> Windows utilise la virgule (,) comme séparateur décimal.
+                <strong>Problème :</strong> Windows utilise la virgule (,) comme séparateur décimal.
             </div>
             <div class="success">
                 <strong>🔧 Solution :</strong>
@@ -447,7 +447,7 @@
                 </ol>
             </div>
 
-            <h3>🔴 "CRS source invalide" ou "CRS cible invalide"</h3>
+            <h3>"CRS source invalide" ou "CRS cible invalide"</h3>
             <div class="success">
                 <strong>🔧 Solutions :</strong>
                 <ul>
@@ -457,7 +457,7 @@
                 </ul>
             </div>
 
-            <h3>🔴 "Coordonnées invalides" ou format DMS erroné</h3>
+            <h3>"Coordonnées invalides" ou format DMS erroné</h3>
             <div class="success">
                 <strong>🔧 Solutions :</strong>
                 <ul>
@@ -467,7 +467,7 @@
                 </ul>
             </div>
 
-            <h3>🔴 Fichier CSV ignoré (lignes non converties)</h3>
+            <h3>Fichier CSV ignoré (lignes non converties)</h3>
             <div class="success">
                 <strong>🔧 Solutions :</strong>
                 <ul>
@@ -478,7 +478,7 @@
                 </ul>
             </div>
 
-            <h3>🔴 La conversion batch ne produit pas le même résultat que la conversion simple</h3>
+            <h3>La conversion batch ne produit pas le même résultat que la conversion simple</h3>
             <div class="success">
                 <strong>🔧 Solutions :</strong>
                 <ul>
@@ -489,15 +489,15 @@
             </div>
 
             <div class="note">
-                📌 <strong>Bon à savoir :</strong> La plupart des erreurs viennent de problèmes d'encodage (UTF-8) ou de séparateurs décimaux (point vs virgule).
+                <strong>Bon à savoir :</strong> La plupart des erreurs viennent de problèmes d'encodage (UTF-8) ou de séparateurs décimaux (point vs virgule).
             </div>
         </div>
 
         <!-- ==================== EXEMPLES ==================== -->
         <div id="exemples" class="section">
-            <h2>📊 Exemples de conversion</h2>
+            <h2>Exemples de conversion</h2>
 
-            <h3>🌍 WGS84 (DD) → BFTM (Burkina Faso)</h3>
+            <h3>WGS84 (DD) → BFTM (Burkina Faso)</h3>
             <table>
                 <tr><th>Point</th><th>X (Longitude)</th><th>Y (Latitude)</th><th>X_BFTM</th><th>Y_BFTM</th></tr>
                 <tr><td>Ouagadougou</td><td>-1.5°</td><td>12.3°</td><td>600,000 m</td><td>1,360,000 m</td></tr>
@@ -505,31 +505,31 @@
                 <tr><td>Koudougou</td><td>-2.4°</td><td>13.3°</td><td>480,000 m</td><td>1,470,000 m</td></tr>
             </table>
 
-            <h3>🌍 WGS84 (DMS) → BFTM</h3>
+            <h3>WGS84 (DMS) → BFTM</h3>
             <table>
                 <tr><th>Saisie DMS</th><th>X_BFTM</th><th>Y_BFTM</th></tr>
                 <tr><td>1°30'0" O, 12°30'15" N</td><td>600,000 m</td><td>1,360,000 m</td></tr>
                 <tr><td>4°18'0" O, 11°12'0" N</td><td>350,000 m</td><td>1,240,000 m</td></tr>
             </table>
 
-            <h3>📐 UTM 30N → BFTM</h3>
+            <h3>UTM 30N → BFTM</h3>
             <table>
                 <tr><th>UTM 30N X</th><th>UTM 30N Y</th><th>BFTM X</th><th>BFTM Y</th></tr>
                 <tr><td>679,246 m</td><td>1,359,847 m</td><td>600,000 m</td><td>1,360,000 m</td></tr>
                 <tr><td>375,000 m</td><td>1,238,000 m</td><td>350,000 m</td><td>1,240,000 m</td></tr>
             </table>
 
-            <h3>📁 Exemple de fichier CSV pour batch</h3>
+            <h3>Exemple de fichier CSV pour batch</h3>
             <pre>id,longitude,latitude,ville
 1,1°30'0" O,12°30'15" N,Ouagadougou
 2,4°18'0" O,11°12'0" N,Bobo-Dioulasso
 3,2°24'0" O,13°18'0" N,Koudougou</pre>
 
             <div class="note">
-                📌 <strong>Configuration du batch :</strong><br>
+                <strong>Configuration du batch :</strong><br>
                 - Séparateur : <code>,</code> (virgule)<br>
                 - Format des coordonnées : <code>Degrés/Minutes/Secondes (DMS)</code><br>
-                - CRS source : <code>🌍 WGS 84 (degrés)</code><br>
+                - CRS source : <code>WGS 84 (degrés)</code><br>
                 - CRS cible : <code>🇧🇫 BFTM (Burkina Faso)</code>
             </div>
         </div>
@@ -543,15 +543,15 @@
                     <p><a href="mailto:jeanbaptiste.kibora@tic.gov.bf">jeanbaptiste.kibora@tic.gov.bf</a></p>
                 </div>
                 <div class="card">
-                    <h3>🐙 GitHub</h3>
+                    <h3>GitHub</h3>
                     <p><a href="https://github.com/geomatic-web/universal_xy_converter">github.com/geomatic-web/universal_xy_converter</a></p>
                 </div>
                 <div class="card">
-                    <h3>🐛 Signaler un bug</h3>
+                    <h3>Signaler un bug</h3>
                     <p><a href="https://github.com/geomatic-web/universal_xy_converter/issues">Ouvrir une issue</a></p>
                 </div>
                 <div class="card">
-                    <h3>📱 Téléphone</h3>
+                    <h3>Téléphone</h3>
                     <p>+226 64 41 25 14 / +226 68 69 04 11</p>
                 </div>
             </div>
