@@ -124,7 +124,7 @@ class BatchProcessor(QThread):
                     y = self.dms_to_decimal(y_str)
                     if x is None or y is None:
                         self.log.emit(
-                            f"⚠️ Ligne {i + 2}: format DMS invalide ('{x_str}', '{y_str}')"
+                            f"Ligne {i + 2}: format DMS invalide ('{x_str}', '{y_str}')"
                         )
                         errors += 1
                         continue
@@ -151,7 +151,7 @@ class BatchProcessor(QThread):
                     return ""
                 else:
                     errors += 1
-                    self.log.emit(f"⚠️ Ligne {i + 2} ignorée: valeur non numérique")
+                    self.log.emit(f"Ligne {i + 2} ignorée: valeur non numérique")
 
             except Exception as e:
                 if not self.config.get("skip_invalid", True):
@@ -159,7 +159,7 @@ class BatchProcessor(QThread):
                     return ""
                 else:
                     errors += 1
-                    self.log.emit(f"⚠️ Ligne {i + 2} ignorée: {str(e)}")
+                    self.log.emit(f"Ligne {i + 2} ignorée: {str(e)}")
 
             if total_rows > 0:
                 self.progress.emit(int((i + 1) / total_rows * 100))
