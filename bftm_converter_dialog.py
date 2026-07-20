@@ -45,7 +45,7 @@ except ImportError:
 
 
 class UniversalXYConverterDialog(QDialog):
-    # ==================== CACHE AU NIVEAU CLASSE ====================
+    #  CACHE AU NIVEAU CLASSE
     _crs_definitions_cache = None  # Cache des définitions texte
     _crs_objects_cache = {}  # Cache des objets CRS déjà créés
     _cache_file = None  # Chemin du cache disque
@@ -81,13 +81,13 @@ class UniversalXYConverterDialog(QDialog):
                 cache_dir, "universal_xy_converter_crs_defs.pkl"
             )
 
-        # ==== CONSTRUCTION UI COMPLÈTE ====
+        #  CONSTRUCTION UI COMPLÈTE
         self.setup_ui()
 
-        # ==== CHARGEMENT DES CRS EN ARRIÈRE-PLAN ====
+        #  CHARGEMENT DES CRS EN ARRIÈRE-PLAN
         QTimer.singleShot(50, self._load_crs_async)
 
-    # ==================== CHARGEMENT ASYNCHRONE DES CRS ====================
+    #  CHARGEMENT ASYNCHRONE DES CRS
 
     def _load_crs_async(self):
         """Charge les définitions CRS de manière asynchrone"""
@@ -144,7 +144,7 @@ class UniversalXYConverterDialog(QDialog):
                 self.interactive_crs_combo, "🇧🇫 BFTM (Burkina Faso) - OFFICIEL"
             )
 
-    # ==================== GESTION DU CACHE DISQUE ====================
+    #  GESTION DU CACHE DISQUE
 
     def _load_crs_from_disk_cache(self):
         """Charge les définitions CRS depuis le cache disque"""
@@ -165,7 +165,7 @@ class UniversalXYConverterDialog(QDialog):
         except Exception:
             return False
 
-    # ==================== MÉTHODES DE CONVERSION DMS ====================
+    #  MÉTHODES DE CONVERSION DMS
 
     def dms_to_decimal(self, dms_string):
         try:
@@ -224,7 +224,7 @@ class UniversalXYConverterDialog(QDialog):
         except Exception:
             return str(decimal)
 
-    # ==================== CRS OPTIMISÉ (LAZY LOADING) ====================
+    #  CRS OPTIMISÉ (LAZY LOADING)
 
     def setup_crs_definitions(self):
         """
@@ -241,10 +241,10 @@ class UniversalXYConverterDialog(QDialog):
             UniversalXYConverterDialog._crs_definitions_cache = disk_cache
             return
 
-        # ==== CRÉATION DES DÉFINITIONS (TEXTE UNIQUEMENT) ====
+        # CRÉATION DES DÉFINITIONS (TEXTE UNIQUEMENT)
         defs = {}
 
-        # ========== 1. SYSTÈMES DE RÉFÉRENCE PRINCIPAUX ==========
+        # 1. SYSTÈMES DE RÉFÉRENCE PRINCIPAUX
         defs["🇧🇫 BFTM (Burkina Faso) - OFFICIEL"] = (
             "+proj=tmerc +lat_0=0 +lon_0=-1.5 +k=0.9996 "
             "+x_0=600000 +y_0=0 +ellps=GRS80 +units=m +no_defs"
@@ -255,7 +255,7 @@ class UniversalXYConverterDialog(QDialog):
             "+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs"
         )
 
-        # ========== 2. CLARKE 1880 (degrés) ==========
+        # 2. CLARKE 1880 (degrés)
         defs["🗺️ Clarke 1880 (degrés) - Afrique Ouest"] = (
             "+proj=longlat +ellps=clrk80 +towgs84=-118,-14,218 +no_defs"
         )
@@ -263,7 +263,7 @@ class UniversalXYConverterDialog(QDialog):
             "+proj=longlat +ellps=clrk80 +towgs84=-166,-15,204 +no_defs"
         )
 
-        # ========== 3. ADINDAN (degrés) ==========
+        # 3. ADINDAN (degrés)
         defs["🌍 Adindan (degrés) - Afrique Ouest"] = (
             "+proj=longlat +ellps=clrk80 +towgs84=-118,-14,218 +no_defs"
         )
@@ -271,12 +271,12 @@ class UniversalXYConverterDialog(QDialog):
             "+proj=longlat +ellps=clrk80 +towgs84=-166,-15,204 +no_defs"
         )
 
-        # ========== 4. WGS 84 UTM - ZONES 1 À 60 ==========
+        # 4. WGS 84 UTM - ZONES 1 À 60
         for zone in range(1, 61):
             defs[f"📐 WGS 84 / UTM zone {zone}N"] = f"EPSG:326{zone:02d}"
             defs[f"📐 WGS 84 / UTM zone {zone}S"] = f"EPSG:327{zone:02d}"
 
-        # ========== 5. CLARKE 1880 UTM - ZONES 1 À 60 ==========
+        #  5. CLARKE 1880 UTM - ZONES 1 À 60
         for zone in range(1, 61):
             defs[f"🗺️ Clarke 1880 Ouest / UTM {zone}N"] = (
                 f"+proj=utm +zone={zone} +ellps=clrk80 "
@@ -287,7 +287,7 @@ class UniversalXYConverterDialog(QDialog):
                 f"+towgs84=-166,-15,204 +units=m +no_defs"
             )
 
-        # ========== 6. ADINDAN UTM - ZONES 1 À 60 ==========
+        #  6. ADINDAN UTM - ZONES 1 À 60
         for zone in range(1, 61):
             defs[f"🌍 Adindan Ouest / UTM {zone}N"] = (
                 f"+proj=utm +zone={zone} +ellps=clrk80 "
@@ -298,17 +298,17 @@ class UniversalXYConverterDialog(QDialog):
                 f"+towgs84=-166,-15,204 +units=m +no_defs"
             )
 
-        # ========== 7. ITRF2008 UTM - ZONES 1 À 60 ==========
+        #  7. ITRF2008 UTM - ZONES 1 À 60
         for zone in range(1, 61):
             defs[f"🌐 ITRF2008 / UTM zone {zone}N"] = (
                 f"+proj=utm +zone={zone} +ellps=GRS80 "
                 f"+towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
             )
 
-        # ========== 8. CRS PERSONNALISÉ ==========
+        #  8. CRS PERSONNALISÉ
         defs["--- Personnalisé (PROJ) ---"] = "CUSTOM"
 
-        # ========== 9. OPTION POUR CHARGER PLUS ==========
+        #  9. OPTION POUR CHARGER PLUS
         defs["--- 🔄 Charger tous les CRS supplémentaires ---"] = "LOAD_ALL"
 
         # Sauvegarder dans le cache mémoire
@@ -364,7 +364,7 @@ class UniversalXYConverterDialog(QDialog):
 
         self.all_crs_loaded = True
         self.iface.messageBar().pushMessage(
-            "Info", "✅ Tous les CRS sont déjà disponibles", Qgis.Success
+            "Info", "Tous les CRS sont déjà disponibles", Qgis.Success
         )
 
     def _populate_crs_combo(self, combo):
@@ -376,7 +376,7 @@ class UniversalXYConverterDialog(QDialog):
         combo.addItems(list(UniversalXYConverterDialog._crs_definitions_cache.keys()))
         combo.blockSignals(False)
 
-    # ==================== GETTERS AVEC LAZY LOADING ====================
+    #  GETTERS AVEC LAZY LOADING
 
     def get_source_crs(self):
         """Retourne le CRS source avec Lazy Loading"""
@@ -452,7 +452,7 @@ class UniversalXYConverterDialog(QDialog):
         layout.addWidget(self.tabs)
         self.setLayout(layout)
 
-    # ==================== CONVERSION SIMPLE ====================
+    #  CONVERSION SIMPLE
 
     def setup_simple_tab(self):
         layout = QVBoxLayout()
