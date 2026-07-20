@@ -1,7 +1,7 @@
 [general]
 name=Universal XY Converter
 description=Universal coordinate converter supporting all QGIS CRS (200+ systems) with native BFTM support for Burkina Faso. Convert between any CRS: WGS84, UTM zones 1-60, Adindan, Clarke 1880, NAD83, ETRS89, GDA2020, and custom PROJ strings. Features: single conversion, batch CSV processing, interactive map picking, support for DD, DMS (with French notations O/E/N/S), and meters.
-version=1.1.0
+version=2.0.0
 qgisMinimumVersion=3.0
 qgisMaximumVersion=4.99
 author=Bazikité Jean-Baptiste KIBORA | GIS Developer
