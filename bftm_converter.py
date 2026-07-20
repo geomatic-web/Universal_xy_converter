@@ -9,14 +9,14 @@ class UniversalXYConverter:
         self.iface = iface
         self.plugin_dir = os.path.dirname(__file__)
         self.actions = []
-        self.menu = 'Universal XY Converter'
-        self.toolbar = self.iface.addToolBar('Universal XY Converter')
-        self.toolbar.setObjectName('UniversalXYConverter')
+        self.menu = "Universal XY Converter"
+        self.toolbar = self.iface.addToolBar("Universal XY Converter")
+        self.toolbar.setObjectName("UniversalXYConverter")
 
     def initGui(self):
         """Crée l'entrée dans le menu et la barre d'outils."""
         # Chemin vers l'icône
-        icon_path = os.path.join(self.plugin_dir, 'icon.png')
+        icon_path = os.path.join(self.plugin_dir, "icon.png")
 
         # Si l'icône n'existe pas, utiliser l'icône par défaut
         if os.path.exists(icon_path):
@@ -25,7 +25,7 @@ class UniversalXYConverter:
             # Icône par défaut (optionnel)
             icon = QIcon()
 
-        action = QAction(icon, 'Universal XY Converter', self.iface.mainWindow())
+        action = QAction(icon, "Universal XY Converter", self.iface.mainWindow())
         action.triggered.connect(self.run)
         self.iface.addPluginToMenu(self.menu, action)
         self.toolbar.addAction(action)
@@ -42,4 +42,4 @@ class UniversalXYConverter:
         """Affiche la boîte de dialogue de conversion."""
         dialog = UniversalXYConverterDialog(self.iface, self.plugin_dir)
         dialog.show()
-        dialog.exec_()
+        dialog.exec()
