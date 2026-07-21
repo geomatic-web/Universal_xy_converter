@@ -1,7 +1,7 @@
 import os
 import csv
 import re
-import pickle
+import json
 from qgis.PyQt.QtCore import Qt, QTimer, QStandardPaths
 from qgis.PyQt.QtWidgets import (
     QDialog,
@@ -23,6 +23,23 @@ from qgis.PyQt.QtWidgets import (
     QApplication,
 )
 from qgis.PyQt.QtGui import QTextCursor
+
+
+def _qt_enum(cls, group_name, value_name):
+    """
+    Retourne une valeur d'énumération Qt de façon compatible entre
+    PyQt5/Qt5 (QGIS 3.x, énums non scopés, ex: QTextCursor.End) et
+    PyQt6/Qt6 (QGIS 4.x, énums scopés, ex: QTextCursor.MoveOperation.End).
+    """
+    group = getattr(cls, group_name, None)
+    if group is not None and hasattr(group, value_name):
+        return getattr(group, value_name)
+    return getattr(cls, value_name)
+
+
+# Valeurs pré-calculées une seule fois, utilisables directement dans le code
+QTEXTCURSOR_END = _qt_enum(QTextCursor, "MoveOperation", "End")
+QT_ALIGN_CENTER = _qt_enum(Qt, "AlignmentFlag", "AlignCenter")
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -30,6 +47,7 @@ from qgis.core import (
     QgsPointXY,
     QgsWkbTypes,
     Qgis,
+    QgsMessageLog,
 )
 from qgis.gui import QgsMapToolEmitPoint, QgsRubberBand
 
@@ -66,19 +84,31 @@ class UniversalXYConverterDialog(QDialog):
         self.setMinimumHeight(750)
 
         # Initialiser le chemin du cache disque
+        # Lignes ~65-78 : Remplacer par :
+        # Initialiser le chemin du cache disque
         if UniversalXYConverterDialog._cache_file is None:
-            cache_dir = QStandardPaths.writableLocation(
-                QStandardPaths.StandardLocation.CacheLocation
-            )
+            # Compatibilité QGIS 3.0+
+            try:
+                cache_dir = QStandardPaths.writableLocation(
+                    QStandardPaths.StandardLocation.CacheLocation
+                )
+            except AttributeError:
+                try:
+                    cache_dir = QStandardPaths.writableLocation(
+                        QStandardPaths.StandardLocation.GenericDataLocation
+                    )
+                except Exception:
+                    cache_dir = os.path.join(os.path.expanduser("~"), ".qgis3", "cache")
+
             if not cache_dir:
-                cache_dir = os.path.expanduser("~/.qgis3/cache")
+                cache_dir = os.path.join(os.path.expanduser("~"), ".qgis3", "cache")
             try:
                 os.makedirs(cache_dir, exist_ok=True)
-            except BaseException:
-                cache_dir = os.path.expanduser("~/.cache/qgis3")
+            except Exception:
+                cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "qgis3")
                 os.makedirs(cache_dir, exist_ok=True)
             UniversalXYConverterDialog._cache_file = os.path.join(
-                cache_dir, "universal_xy_converter_crs_defs.pkl"
+                cache_dir, "universal_xy_converter_crs_defs.json"
             )
 
         #  CONSTRUCTION UI COMPLÈTE
@@ -147,20 +177,28 @@ class UniversalXYConverterDialog(QDialog):
     #  GESTION DU CACHE DISQUE
 
     def _load_crs_from_disk_cache(self):
-        """Charge les définitions CRS depuis le cache disque"""
+        """Charge les définitions CRS depuis le cache disque (format JSON)."""
         try:
             if not os.path.exists(UniversalXYConverterDialog._cache_file):
                 return None
-            with open(UniversalXYConverterDialog._cache_file, "rb") as f:
-                return pickle.load(f)
+            with open(
+                UniversalXYConverterDialog._cache_file, "r", encoding="utf-8"
+            ) as f:
+                data = json.load(f)
+            # Validation minimale : on attend un simple dict {nom: définition}
+            if isinstance(data, dict):
+                return data
+            return None
         except Exception:
             return None
 
     def _save_crs_to_disk_cache(self, crs_defs):
-        """Sauvegarde les définitions CRS dans le cache disque"""
+        """Sauvegarde les définitions CRS dans le cache disque (format JSON)."""
         try:
-            with open(UniversalXYConverterDialog._cache_file, "wb") as f:
-                pickle.dump(crs_defs, f)
+            with open(
+                UniversalXYConverterDialog._cache_file, "w", encoding="utf-8"
+            ) as f:
+                json.dump(crs_defs, f, ensure_ascii=False)
             return True
         except Exception:
             return False
@@ -317,6 +355,68 @@ class UniversalXYConverterDialog(QDialog):
         # Sauvegarder sur disque
         QTimer.singleShot(500, lambda: self._save_crs_to_disk_cache(defs))
 
+    def _create_crs(self, definition):
+        """
+        Crée un objet QgsCoordinateReferenceSystem à partir d'une définition
+        (EPSG:xxxx ou chaîne PROJ), de manière robuste et compatible
+        QGIS 3.0 jusqu'à QGIS 4.x.
+
+        On privilégie le constructeur direct par chaîne, qui est la méthode
+        recommandée et stable dans toutes les versions récentes de QGIS
+        (contrairement à createFromOgcWmsCrs()/createFromProj() qui, selon
+        les bindings PyQGIS, peuvent ne pas être exposées de façon uniforme
+        sur QGIS 4.x).
+        """
+        if not definition:
+            return None
+
+        definition = definition.strip()
+        crs = None
+
+        try:
+            if definition.upper().startswith("EPSG:"):
+                # Constructeur direct : stable depuis QGIS 3.0 jusqu'à 4.x
+                crs = QgsCoordinateReferenceSystem(definition)
+            else:
+                # Chaîne PROJ (ex: "+proj=tmerc +lat_0=... ")
+                # Le constructeur QGIS 4.x attend un préfixe "PROJ:",
+                # tandis que QGIS 3.x l'accepte aussi tel quel.
+                try:
+                    crs = QgsCoordinateReferenceSystem("PROJ:" + definition)
+                except Exception:
+                    crs = None
+
+                if crs is None or not crs.isValid():
+                    # Repli sur les méthodes d'instance si disponibles
+                    crs = QgsCoordinateReferenceSystem()
+                    if hasattr(crs, "createFromProj"):
+                        crs.createFromProj(definition)
+                    elif hasattr(crs, "createFromProj4"):
+                        crs.createFromProj4(definition)
+        except Exception:
+            crs = None
+
+        if crs is not None and crs.isValid():
+            return crs
+
+        # Dernier filet de sécurité : createFromUserInput() accepte quasiment
+        # tous les formats (EPSG, PROJ, WKT, noms usuels...) et existe sur
+        # toutes les versions de QGIS depuis très longtemps.
+        try:
+            crs_fallback = QgsCoordinateReferenceSystem()
+            if hasattr(
+                crs_fallback, "createFromUserInput"
+            ) and crs_fallback.createFromUserInput(definition):
+                return crs_fallback
+        except Exception as e:
+            QgsMessageLog.logMessage(
+                f"CRS non reconnu ('{definition}'): {e}",
+                "Universal XY Converter",
+                Qgis.MessageLevel.Warning,
+            )
+
+        return None
+
     def _instantiate_crs(self, crs_name):
         """
         Crée l'objet QgsCoordinateReferenceSystem UNIQUEMENT quand on en a besoin.
@@ -342,15 +442,10 @@ class UniversalXYConverterDialog(QDialog):
         if definition == "LOAD_ALL":
             return None
 
-        # Créer l'objet CRS
-        crs = QgsCoordinateReferenceSystem()
+        # Créer l'objet CRS (méthode robuste, compatible QGIS 3.0 -> 4.x)
+        crs = self._create_crs(definition)
 
-        if definition.startswith("EPSG:"):
-            crs.createFromOgcWmsCrs(definition)
-        else:
-            crs.createFromProj(definition)
-
-        if crs.isValid():
+        if crs is not None and crs.isValid():
             # Stocker dans le cache des objets
             UniversalXYConverterDialog._crs_objects_cache[crs_name] = crs
             return crs
@@ -364,7 +459,7 @@ class UniversalXYConverterDialog(QDialog):
 
         self.all_crs_loaded = True
         self.iface.messageBar().pushMessage(
-            "Info", "Tous les CRS sont déjà disponibles", Qgis.Success
+            "Info", "Tous les CRS sont déjà disponibles", Qgis.MessageLevel.Success
         )
 
     def _populate_crs_combo(self, combo):
@@ -382,48 +477,40 @@ class UniversalXYConverterDialog(QDialog):
         """Retourne le CRS source avec Lazy Loading"""
         current_text = self.source_crs_combo.currentText()
         if current_text == "--- Personnalisé (PROJ) ---":
-            crs = QgsCoordinateReferenceSystem()
             proj_string = self.custom_source_edit.text()
             if not proj_string:
                 return None
-            crs.createFromProj(proj_string)
-            return crs if crs.isValid() else None
+            return self._create_crs(proj_string)
         return self._instantiate_crs(current_text)
 
     def get_target_crs(self):
         """Retourne le CRS cible avec Lazy Loading"""
         current_text = self.target_crs_combo.currentText()
         if current_text == "--- Personnalisé (PROJ) ---":
-            crs = QgsCoordinateReferenceSystem()
             proj_string = self.custom_target_edit.text()
             if not proj_string:
                 return None
-            crs.createFromProj(proj_string)
-            return crs if crs.isValid() else None
+            return self._create_crs(proj_string)
         return self._instantiate_crs(current_text)
 
     def get_batch_source_crs(self):
         """Retourne le CRS source du batch avec Lazy Loading"""
         current_text = self.batch_source_crs_combo.currentText()
         if current_text == "--- Personnalisé (PROJ) ---":
-            crs = QgsCoordinateReferenceSystem()
             proj_string = self.batch_custom_source_edit.text()
             if not proj_string:
                 return None
-            crs.createFromProj(proj_string)
-            return crs if crs.isValid() else None
+            return self._create_crs(proj_string)
         return self._instantiate_crs(current_text)
 
     def get_batch_target_crs(self):
         """Retourne le CRS cible du batch avec Lazy Loading"""
         current_text = self.batch_target_crs_combo.currentText()
         if current_text == "--- Personnalisé (PROJ) ---":
-            crs = QgsCoordinateReferenceSystem()
             proj_string = self.batch_custom_target_edit.text()
             if not proj_string:
                 return None
-            crs.createFromProj(proj_string)
-            return crs if crs.isValid() else None
+            return self._create_crs(proj_string)
         return self._instantiate_crs(current_text)
 
     # ==================== UI ====================
@@ -726,7 +813,7 @@ class UniversalXYConverterDialog(QDialog):
         try:
             if not self.source_x.text() or not self.source_y.text():
                 self.iface.messageBar().pushMessage(
-                    "Erreur", tr("error_enter_coords"), Qgis.Critical
+                    "Erreur", tr("error_enter_coords"), Qgis.MessageLevel.Critical
                 )
                 return
             src_fmt = self.source_format_combo.currentText()
@@ -1144,13 +1231,13 @@ class UniversalXYConverterDialog(QDialog):
         self.map_tool.canvasClicked.connect(self.on_map_click)
         self.iface.mapCanvas().setMapTool(self.map_tool)
         self.rubber_band = QgsRubberBand(
-            self.iface.mapCanvas(), QgsWkbTypes.PointGeometry
+            self.iface.mapCanvas(), QgsWkbTypes.GeometryType.PointGeometry
         )
         self.rubber_band.setColor(Qt.GlobalColor.red)
         self.rubber_band.setWidth(5)
         self.activate_btn.setEnabled(False)
         self.deactivate_btn.setEnabled(True)
-        self.iface.messageBar().pushMessage("Info", tr("interactive_info"), Qgis.Info)
+        self.iface.messageBar().pushMessage("Info", tr("interactive_info"), Qgis.MessageLevel.Info)
 
     def deactivate_point_picker(self):
         if self.map_tool:
@@ -1240,7 +1327,7 @@ class UniversalXYConverterDialog(QDialog):
         if self.interactive_result.text():
             clipboard = QApplication.clipboard()
             clipboard.setText(self.interactive_result.text())
-            self.iface.messageBar().pushMessage("Succès", tr("copy_result"), Qgis.Info)
+            self.iface.messageBar().pushMessage("Succès", tr("copy_result"), Qgis.MessageLevel.Info)
 
     # ==================== MÉTHODES UTILITAIRES ====================
 
@@ -1259,13 +1346,13 @@ class UniversalXYConverterDialog(QDialog):
         self.target_crs_combo.setCurrentText(src_text)
         self.update_source_formats()
         self.update_target_formats()
-        self.iface.messageBar().pushMessage("Info", tr("crs_swapped"), Qgis.Info)
+        self.iface.messageBar().pushMessage("Info", tr("crs_swapped"), Qgis.MessageLevel.Info)
 
     def copy_results(self):
         QApplication.clipboard().setText(
             f"{self.result_x.text()}\t{self.result_y.text()}"
         )
-        self.iface.messageBar().pushMessage("Succès", tr("copy_success"), Qgis.Info)
+        self.iface.messageBar().pushMessage("Succès", tr("copy_success"), Qgis.MessageLevel.Info)
 
     def browse_source_file(self):
         path, _ = QFileDialog.getOpenFileName(
@@ -1290,7 +1377,7 @@ class UniversalXYConverterDialog(QDialog):
 
     def append_log(self, msg):
         self.log_text.append(msg)
-        self.log_text.moveCursor(QTextCursor.End)
+        self.log_text.moveCursor(QTEXTCURSOR_END)
 
     def batch_finished(self, path):
         self.process_btn.setEnabled(True)
@@ -1304,7 +1391,7 @@ class UniversalXYConverterDialog(QDialog):
         layout = QVBoxLayout()
         title = QLabel(tr("help_title"))
         title.setStyleSheet("font-size: 16px; font-weight: bold;")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setAlignment(QT_ALIGN_CENTER)
         layout.addWidget(title)
 
         help_text = QTextEdit()
