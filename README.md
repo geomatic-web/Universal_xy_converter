@@ -1,5 +1,8 @@
 # Universal XY Converter - QGIS Plugin
 **Extension QGIS puissante pour la conversion de coordonnées géographiques entre **200+ systèmes de projection**, avec prise en charge native du système **BFTM (Burkina Faso Transverse Mercator)**.
+[![QGIS Plugin](https://img.shields.io/badge/QGIS-Plugin-brightgreen)](https://github.com/geomatic-web/universal-map2web)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/geomatic-web/universal_map2web)
+[![License](https://img.shields.io/badge/license-GPLv2-orange)](https://github.com/geomatic-web/universal_map2web)
 <h2>Video Tutorial</h2>
 https://youtu.be/PlOYuNvz2ZM
 
