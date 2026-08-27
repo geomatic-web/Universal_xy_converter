@@ -4,8 +4,7 @@
 [![Version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/geomatic-web/universal_map2web)
 [![License](https://img.shields.io/badge/license-GPLv2-orange)](https://github.com/geomatic-web/universal_map2web)
 <h2>Video Tutorial</h2>
-https://youtu.be/PlOYuNvz2ZM
-
+https://www.youtube.com/watch?v=PlOYuNvz2ZM
 ---
 ## Fonctionnalités
 
