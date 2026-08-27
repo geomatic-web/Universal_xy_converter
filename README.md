@@ -1,46 +1,49 @@
-# Universal XY Converter - QGIS Plugin
-**Extension QGIS puissante pour la conversion de coordonnées géographiques entre **200+ systèmes de projection**, avec prise en charge native du système **BFTM (Burkina Faso Transverse Mercator)**.
+**Powerful QGIS extension for converting geographic coordinates between 200+ projection systems**, with native support for the **BFTM (Burkina Faso Transverse Mercator)** system.
+ 
 [![QGIS Plugin](https://img.shields.io/badge/QGIS-Plugin-brightgreen)](https://github.com/geomatic-web/universal-map2web)
 [![Version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/geomatic-web/universal_map2web)
 [![License](https://img.shields.io/badge/license-GPLv2-orange)](https://github.com/geomatic-web/universal_map2web)
-<h2>Video Tutorial</h2>
+
+## Video Tutorial
+ 
 https://www.youtube.com/watch?v=PlOYuNvz2ZM
----
-## Fonctionnalités
+ 
+## Documentation
+ 
+[The complete user manual is available here (PDF)](User_manuel_QGIS_Plugin_XY_converter.pdf)
+## Features
+✅ **Conversion between 200+ coordinate systems**
+✅ **Batch processing of CSV files** (bulk import/export)
+✅ **Interactive map selection** (click to retrieve coordinates)
+✅ **Custom CRS** (PROJ strings)
+✅ **Native support for local systems** such as **BFTM (Burkina Faso)**
+✅ **Multi-format export**: CSV, GeoJSON, KML, Shapefile
+✅ **Intuitive user interface** integrated into QGIS
+✅ **Conversion history** for quick access
 
-✅ **Conversion entre 200+ systèmes de coordonnées**  
-✅ **Traitement batch de fichiers CSV** (import/export en masse)  
-✅ **Sélection interactive sur carte** (clic pour récupérer les coordonnées)  
-✅ **CRS personnalisés** (chaînes PROJ)  
-✅ **Support natif des systèmes locaux** comme le **BFTM (Burkina Faso)**  
-✅ **Export multi-formats** : CSV, GeoJSON, KML, Shapefile  
-✅ **Interface utilisateur intuitive** intégrée à QGIS  
-✅ **Historique des conversions** pour un accès rapide  
-
 ---
+ 
 ## Installation
-
-### Méthode 1 : Depuis le dépôt officiel QGIS (recommandée)
-
-1. Ouvrez **QGIS**
-2. Allez dans **Extensions → Gérer les extensions**
-3. Recherchez **"Universal XY Converter"**
-4. Cliquez sur **Installer**
-
-### Méthode 2 : Installation manuelle depuis un ZIP
-
-1. Téléchargez le fichier ZIP à l'adresse suivante :  
+ 
+### Method 1: From the official QGIS repository (recommended)
+ 
+1. Open **QGIS**
+2. Go to **Plugins → Manage and Install Plugins**
+3. Search for **"Universal XY Converter"**
+4. Click **Install**
+### Method 2: Manual installation from a ZIP file
+ 
+1. Download the ZIP file from the following address:
    🔗 **https://plugins.qgis.org/plugins/universal_xy_converter/version/1.1.0/download/**
-2. Dans QGIS, allez dans **Extensions → Gérer les extensions**
-3. Cliquez sur **Installer depuis un ZIP**
-4. Sélectionnez le fichier ZIP depuis votre dossier de téléchargement
-5. Validez l'installation
-
-### Méthode 3 : Depuis le code source
-
+2. In QGIS, go to **Plugins → Manage and Install Plugins**
+3. Click **Install from ZIP**
+4. Select the downloaded ZIP file
+5. Confirm the installation
+### Method 3: From source
+ 
 ```bash
-# Cloner le dépôt
+# Clone the repository
 git clone https://github.com/geomatic-web/Universal_xy_converter.git
-
-# Copier le dossier dans le répertoire des plugins QGIS
+ 
+# Copy the folder into the QGIS plugins directory
 cp -r Universal_xy_converter ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins/
