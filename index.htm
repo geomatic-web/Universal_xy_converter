@@ -10,7 +10,8 @@
     <meta name="keywords" content="QGIS, conversion coordonnées, Universal XY Converter, BFTM Burkina Faso, Jean-Baptiste KIBORA, plugin QGIS, géomatique, CEFOGIA">
     <meta name="author" content="Jean-Baptiste KIBORA">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://github.com/geomatic-web/Universal_xy_converter">
+    <link rel="canonical" href="https://geomatic-web.github.io/Universal_xy_converter/">
+    <link rel="icon" type="image/png" href="icon.png">
 
     <!-- Liens d'autorité -->
     <link rel="author" href="https://geomatic-web.github.io/seformerengeomatique">
@@ -21,14 +22,18 @@
     <meta property="og:title" content="Universal XY Converter - Extension QGIS">
     <meta property="og:description" content="Extension QGIS pour la conversion universelle de coordonnées. Par Jean-Baptiste KIBORA.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://github.com/geomatic-web/Universal_xy_converter">
+    <meta property="og:url" content="https://geomatic-web.github.io/Universal_xy_converter/">
     <meta property="og:image" content="https://github.com/geomatic-web/Universal_xy_converter/raw/main/icon.png">
     <meta property="og:image:alt" content="Icône Universal XY Converter">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:locale" content="fr_FR">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Universal XY Converter - Extension QGIS">
     <meta name="twitter:description" content="Extension QGIS pour la conversion universelle de coordonnées. Par Jean-Baptiste KIBORA.">
+    <meta name="twitter:image" content="https://github.com/geomatic-web/Universal_xy_converter/raw/main/icon.png">
 
     <!-- ============ DONNÉES STRUCTURÉES (JSON-LD) ============ -->
     <script type="application/ld+json">
@@ -36,9 +41,14 @@
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Universal XY Converter",
-      "description": "Extension QGIS pour la conversion universelle de coordonnées.",
+      "description": "Extension QGIS pour la conversion universelle de coordonnées entre plus de 200 systèmes de projection, avec prise en charge native du système BFTM (Burkina Faso Transverse Mercator).",
       "applicationCategory": "Geospatial",
       "operatingSystem": "QGIS",
+      "softwareVersion": "2.0.0",
+      "downloadUrl": "https://plugins.qgis.org/plugins/universal_xy_converter/",
+      "installUrl": "https://plugins.qgis.org/plugins/universal_xy_converter/",
+      "screenshot": "https://github.com/geomatic-web/Universal_xy_converter/raw/main/icon.png",
+      "keywords": "QGIS, conversion coordonnées, BFTM, Burkina Faso, géomatique",
       "author": {
         "@type": "Person",
         "name": "Jean-Baptiste KIBORA",
@@ -48,9 +58,14 @@
           "https://github.com/geomatic-web"
         ]
       },
-      "url": "https://github.com/geomatic-web/Universal_xy_converter",
-      "version": "1.0.2",
-      "identifier": "5343"
+      "sameAs": [
+        "https://github.com/geomatic-web/Universal_xy_converter",
+        "https://plugins.qgis.org/plugins/universal_xy_converter/"
+      ],
+      "url": "https://geomatic-web.github.io/Universal_xy_converter/",
+      "version": "2.0.0",
+      "identifier": "5343",
+      "license": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
     }
     </script>
 
@@ -66,18 +81,24 @@
             color: #333;
             background: #f5f7fa;
         }
-        .container {
-            max-width: 1200px;
+        .layout {
+            display: flex;
+            align-items: flex-start;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+        }
+        .container {
+            flex: 1;
+            min-width: 0;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 30px 30px 0;
         }
         header {
             background: linear-gradient(135deg, #2980b9, #1a5276);
             color: white;
-            padding: 40px 0;
+            padding: 30px 20px;
             text-align: center;
-            border-radius: 0 0 20px 20px;
-            margin-bottom: 30px;
         }
         header h1 {
             font-size: 2.5em;
@@ -110,34 +131,68 @@
         .youtube-btn:hover {
             background: #cc0000;
         }
-        nav {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .sidebar {
+            width: 260px;
+            flex-shrink: 0;
             position: sticky;
-            top: 10px;
-            z-index: 100;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            background: white;
+            border-right: 1px solid #e5e9ee;
+            padding: 25px 18px;
+        }
+        .sidebar .sidebar-title {
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #999;
+            margin: 18px 0 8px 10px;
+            font-weight: bold;
+        }
+        .sidebar .sidebar-title:first-child {
+            margin-top: 0;
         }
         nav ul {
             list-style: none;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
         }
         nav ul li a {
+            display: block;
             text-decoration: none;
-            color: #2980b9;
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background 0.3s;
+            color: #444;
+            font-weight: 600;
+            font-size: 0.95em;
+            padding: 9px 12px;
+            border-radius: 8px;
+            border-left: 3px solid transparent;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+            margin-bottom: 2px;
         }
         nav ul li a:hover {
-            background: #2980b9;
-            color: white;
+            background: #eaf3fa;
+            color: #2980b9;
+        }
+        nav ul li a.active {
+            background: #eaf3fa;
+            color: #2980b9;
+            border-left-color: #2980b9;
+        }
+        .mobile-toggle {
+            display: none;
+            background: white;
+            border: none;
+            color: #2980b9;
+            font-weight: bold;
+            font-size: 1em;
+            padding: 12px 20px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+        .mobile-toggle::after {
+            content: "▾";
+            float: right;
         }
         .section {
             background: white;
@@ -240,13 +295,28 @@
             color: #777;
             font-size: 0.9em;
         }
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            nav ul {
+        @media (max-width: 900px) {
+            .layout {
                 flex-direction: column;
-                align-items: center;
+            }
+            .mobile-toggle {
+                display: block;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid #e5e9ee;
+                padding: 10px 18px 15px;
+                display: none;
+            }
+            .sidebar.open {
+                display: block;
+            }
+            .container {
+                padding: 15px;
+                max-width: 100%;
             }
         }
         .header-content {
@@ -300,19 +370,32 @@
         </div>
     </header>
 
-    <div class="container">
-        <nav>
-            <ul>
-                <li><a href="#installation">Installation</a></li>
-                <li><a href="#utilisation">Utilisation</a></li>
-                <li><a href="#crs-personnalises">CRS Personnalisés</a></li>
-                <li><a href="#astuces">Astuces</a></li>
-                <li><a href="#erreurs">Erreurs</a></li>
-                <li><a href="#exemples">Exemples</a></li>
-                <li><a href="#auteur">Auteur</a></li>
-                <li><a href="#support">Support</a></li>
-            </ul>
-        </nav>
+    <button class="mobile-toggle" id="mobileToggle">Menu de documentation</button>
+
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <nav>
+                <p class="sidebar-title">Prise en main</p>
+                <ul>
+                    <li><a href="#installation">Installation</a></li>
+                    <li><a href="#utilisation">Utilisation</a></li>
+                    <li><a href="#crs-personnalises">CRS Personnalisés</a></li>
+                </ul>
+                <p class="sidebar-title">Approfondir</p>
+                <ul>
+                    <li><a href="#astuces">Astuces</a></li>
+                    <li><a href="#erreurs">Erreurs</a></li>
+                    <li><a href="#exemples">Exemples</a></li>
+                </ul>
+                <p class="sidebar-title">À propos</p>
+                <ul>
+                    <li><a href="#auteur">Auteur</a></li>
+                    <li><a href="#support">Support</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+    <main class="container">
 
         <!-- ==================== INSTALLATION ==================== -->
         <div id="installation" class="section">
@@ -326,6 +409,9 @@
                         <li>Recherchez <strong>"Universal XY Converter"</strong></li>
                         <li>Cliquez sur <strong>Installer</strong></li>
                     </ol>
+                    <p style="margin-top:10px;">Ou consultez directement la page du plugin :
+                        <a href="https://plugins.qgis.org/plugins/universal_xy_converter/">plugins.qgis.org/plugins/universal_xy_converter</a>
+                    </p>
                 </div>
                 <div class="card">
                     <h3>Depuis GitHub</h3>
@@ -627,6 +713,10 @@
                     <p><a href="https://github.com/geomatic-web/Universal_xy_converter">github.com/geomatic-web/Universal_xy_converter</a></p>
                 </div>
                 <div class="card">
+                    <h3>Dépôt QGIS officiel</h3>
+                    <p><a href="https://plugins.qgis.org/plugins/universal_xy_converter/">plugins.qgis.org/plugins/universal_xy_converter</a></p>
+                </div>
+                <div class="card">
                     <h3>Signaler un bug</h3>
                     <p><a href="https://github.com/geomatic-web/Universal_xy_converter/issues">Ouvrir une issue</a></p>
                 </div>
@@ -637,13 +727,48 @@
             </div>
         </div>
 
-        <footer>
-            <p>
-                © 2026 <strong><a href="https://geomatic-web.github.io/seformerengeomatique" target="_blank" rel="noopener noreferrer">Jean-Baptiste KIBORA</a></strong> | 
-                <a href="https://github.com/geomatic-web/Universal_xy_converter">Universal XY Converter</a> - 
-                Sous licence GPL v3 | Plugin ID: 5343 | Version 1.1.0 |
-            </p>
-        </footer>
+    </main>
     </div>
+
+    <footer>
+        <p>
+            © 2026 <strong><a href="https://geomatic-web.github.io/seformerengeomatique" target="_blank" rel="noopener noreferrer">Jean-Baptiste KIBORA</a></strong> | 
+            <a href="https://github.com/geomatic-web/Universal_xy_converter">Universal XY Converter</a> - 
+            Sous licence GPL v2 | Plugin ID: 5343 | Version 2.0.0 |
+        </p>
+    </footer>
+
+    <script>
+        // Ouverture/fermeture de la sidebar sur mobile
+        const toggleBtn = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+        sidebar.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => sidebar.classList.remove('open'));
+        });
+
+        // Surlignage du lien actif selon la section visible
+        const links = Array.from(sidebar.querySelectorAll('a'));
+        const sections = links
+            .map(link => document.querySelector(link.getAttribute('href')))
+            .filter(Boolean);
+
+        const setActive = () => {
+            let currentId = sections[0] ? sections[0].id : null;
+            const scrollPos = window.scrollY + 120;
+            sections.forEach(section => {
+                if (section.offsetTop <= scrollPos) {
+                    currentId = section.id;
+                }
+            });
+            links.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === '#' + currentId);
+            });
+        };
+        document.addEventListener('scroll', setActive, { passive: true });
+        window.addEventListener('load', setActive);
+    </script>
 </body>
 </html>
